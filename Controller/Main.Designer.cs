@@ -209,6 +209,7 @@
             this.Controls.Add(this.btnSliceFolder);
             this.Controls.Add(this.pbLayerThumbnail);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.MinimumSize = new System.Drawing.Size(570, 325);
             this.Name = "Main";
             this.Text = "Portobello Print Controller";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Main_FormClosing);

@@ -59,8 +59,9 @@ namespace Controller
         {
             if (this.processor == null) {
                 this.processor = new PrinterProcess(sliceFolderDlg.SelectedPath, this.beamerForm, this);
-                this.processor.Start();
+                this.processor.SetProjectionTime(projectionTimeMs);
                 btnStart.Text = "Stop";
+                this.processor.Start();
             } else {
                 this.processor.Stop();
             }
@@ -106,9 +107,24 @@ namespace Controller
             }
         }
 
+
+        private int projectionTimeMs = 1000;
         private void txtProjectionTimeMs_TextChanged(object sender, EventArgs e)
         {
-            txtProjectionTimeMs.Text = Regex.Replace(txtProjectionTimeMs.Text, @"[^0-9]", "");
+            var oldValue = txtProjectionTimeMs.Text;
+            var timeMs = Regex.Replace(txtProjectionTimeMs.Text, @"[^0-9]", "");
+            if (!string.IsNullOrWhiteSpace(timeMs)) {
+                projectionTimeMs = int.Parse(timeMs);
+            } else {
+                projectionTimeMs = 1000;
+                return;
+            }
+            if (this.processor != null) {
+                if (!this.processor.SetProjectionTime(projectionTimeMs)) {
+                    projectionTimeMs = int.Parse(oldValue);
+                }
+            }
+            txtProjectionTimeMs.Text = projectionTimeMs.ToString();
         }
 
         private void btnPause_Click(object sender, EventArgs e)

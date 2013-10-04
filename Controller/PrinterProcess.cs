@@ -18,6 +18,7 @@ namespace Controller
         private PrinterConnector printerConnection;
         private List<Image> images;
         private List<Image> thumbnails;
+        private int projectionTimeMs = 1000;
 
         public PrinterProcess(string slicePath, BeamerOutput form, Main mainForm)
         {
@@ -39,7 +40,13 @@ namespace Controller
                 this.printerConnection.Connect()
             ) {
                 this.printerConnection.Write("START");
-                new Thread(Run) { IsBackground = true }.Start();
+                try {
+                    new Thread(Run) { IsBackground = true }.Start();
+                } catch (Exception err) {
+                    this.mainForm.StatusMessage("Unknown error." + Environment.NewLine + err.ToString());
+                    this.running = false;
+                    this.mainForm.Done();
+                }
             } else {
                 this.mainForm.StatusMessage("Failed to connect to server.");
                 this.running = false;
@@ -57,6 +64,10 @@ namespace Controller
                 this.mainForm.StatusMessage("Loading complete");
                 ProjectAllImages();
                 SignalDone();
+                this.running = false;
+                this.mainForm.Done();
+            } catch (Exception err) {
+                this.mainForm.StatusMessage("Unknown error." + Environment.NewLine + err.ToString());
                 this.running = false;
                 this.mainForm.Done();
             } finally {
@@ -123,8 +134,13 @@ namespace Controller
                     Thread.Sleep(500);
                 }
             }
+            int notReadyCount = 0;
             while (this.running && !this.printerConnection.PrinterReady) {
-                this.mainForm.StatusMessage("Printer not ready, waiting.");
+                notReadyCount++;
+                if ((notReadyCount = notReadyCount % 10) == 0) {
+                    this.mainForm.StatusMessage("Printer not ready, waiting.");
+                }
+                Thread.Sleep(500);
             }
         }
 
@@ -132,7 +148,7 @@ namespace Controller
         {
             this.mainForm.SetThumbnail(thumb);
             this.beamerForm.SetImage(image);
-            Thread.Sleep(1000);
+            Thread.Sleep(projectionTimeMs);
             this.beamerForm.SetImage(null);
         }
 
@@ -157,5 +173,15 @@ namespace Controller
         }
 
         public bool Pause { get; set; }
+
+        internal bool SetProjectionTime(int projectionTimeMs)
+        {
+            if (!this.running || this.Pause) {
+                this.projectionTimeMs = projectionTimeMs;
+                return true;
+            } else {
+                return false;
+            }
+        }
     }
 }
