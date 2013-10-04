@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Controller
@@ -25,8 +26,13 @@ namespace Controller
             get
             {
                 if (this.Connected) {
-                    this.Write("GET_READY_STATUS");
                     byte[] response = new byte[256];
+                    try {
+                        this.connection.Client.Receive(response);
+                        response = new byte[256];
+                    } catch (SocketException) {
+                    }
+                    this.Write("GET_READY_STATUS");
                     try {
                         if (this.connection.Client.Receive(response) == -1) {
                             return false;
@@ -35,6 +41,7 @@ namespace Controller
                         return false;
                     }
                     var message = Encoding.ASCII.GetString(response);
+                    
                     if (message.ToLower().Contains("ready")) {
                         return true;
                     } else {

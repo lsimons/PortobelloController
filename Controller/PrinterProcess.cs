@@ -108,8 +108,8 @@ namespace Controller
             this.mainForm.SetTotalSlices(count);
             var percentageDone = 0;
             for (int i = 0; i < count; i++) {
-                this.mainForm.SetCurrentSlice(i);
                 WaitForClient();
+                this.mainForm.SetCurrentSlice(i);
                 if (!this.running) {
                     break;
                 }
@@ -121,7 +121,7 @@ namespace Controller
 
         private void WaitForClient()
         {
-            Thread.Sleep(100); // Make sure printer has time to update status after last command
+            Thread.Sleep(50); // Make sure printer has time to update status after last command
             while (this.Pause && this.running) {
                 Thread.Sleep(250);
             }
@@ -131,7 +131,7 @@ namespace Controller
                     this.mainForm.StatusMessage("Client re-connected");
                     break;
                 } else {
-                    Thread.Sleep(500);
+                    Thread.Sleep(200);
                 }
             }
             int notReadyCount = 0;
@@ -140,7 +140,7 @@ namespace Controller
                 if ((notReadyCount = notReadyCount % 10) == 0) {
                     this.mainForm.StatusMessage("Printer not ready, waiting.");
                 }
-                Thread.Sleep(500);
+                Thread.Sleep(100);
             }
         }
 
@@ -169,7 +169,7 @@ namespace Controller
 
         private void SignalDone()
         {
-            this.printerConnection.Write("DONE");
+            this.printerConnection.Write("STOP");
         }
 
         public bool Pause { get; set; }

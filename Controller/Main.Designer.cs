@@ -104,6 +104,7 @@
             // pbLayerThumbnail
             // 
             this.pbLayerThumbnail.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.pbLayerThumbnail.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
             this.pbLayerThumbnail.Location = new System.Drawing.Point(337, 131);
             this.pbLayerThumbnail.Name = "pbLayerThumbnail";
             this.pbLayerThumbnail.Size = new System.Drawing.Size(205, 144);
