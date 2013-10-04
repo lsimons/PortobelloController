@@ -16,8 +16,7 @@ namespace Controller
         private bool running = false;
         private Main mainForm;
         private PrinterConnector printerConnection;
-        private List<Image> images;
-        private List<Image> thumbnails;
+        private List<string> images;
         private int projectionTimeMs = 1000;
 
         public PrinterProcess(string slicePath, BeamerOutput form, Main mainForm)
@@ -57,10 +56,8 @@ namespace Controller
         private void Run()
         {
             try {
-                // TODO: loads all images into memory, impractical for very large models
-                this.mainForm.StatusMessage("Loading images from " + this.slicePath);
+                this.mainForm.StatusMessage("Loading images list " + this.slicePath);
                 this.images = LoadImages();
-                this.thumbnails = GenerateThumbs(this.images);
                 this.mainForm.StatusMessage("Loading complete");
                 ProjectAllImages();
                 SignalDone();
@@ -75,10 +72,10 @@ namespace Controller
             }
         }
 
-        private List<Image> LoadImages()
+        private List<string> LoadImages()
         {
-            var list = new List<Image>();
-            var imageTypes = new string[] { ".bmp", ".png", ".jpg" };
+            var list = new List<string>();
+            var imageTypes = new string[] { ".bmp", ".png", ".jpg", ".jpeg", ".tif" };
             var files = Directory
                 .GetFiles(this.slicePath)
                 .Where(fileName =>
@@ -86,18 +83,7 @@ namespace Controller
                 )
                 .OrderBy(fileName => fileName);
             foreach (var imageFile in files) {
-                list.Add(Image.FromFile(imageFile));
-            }
-            return list;
-        }
-
-        private List<Image> GenerateThumbs(List<Image> images)
-        {
-            var list = new List<Image>();
-            foreach (var image in images) {
-                list.Add(
-                    image.GetThumbnailImage(204, 144, () => { return false; }, IntPtr.Zero)
-                );
+                list.Add(imageFile);
             }
             return list;
         }
@@ -109,11 +95,11 @@ namespace Controller
             var percentageDone = 0;
             for (int i = 0; i < count; i++) {
                 WaitForClient();
-                this.mainForm.SetCurrentSlice(i);
+                this.mainForm.SetCurrentSlice(i+1);
                 if (!this.running) {
                     break;
                 }
-                Project(images[i], thumbnails[i]);
+                Project(images[i]);
                 SignalLayerDone();
                 percentageDone = UpdatePercentageDone(count, percentageDone, i);
             }
@@ -144,12 +130,24 @@ namespace Controller
             }
         }
 
-        private void Project(Image image, Image thumb)
+        private void Project(string imagePath)
         {
-            this.mainForm.SetThumbnail(thumb);
+            var image = GenerateImage(imagePath);
+            this.mainForm.SetThumbnail(image);
             this.beamerForm.SetImage(image);
             Thread.Sleep(projectionTimeMs);
             this.beamerForm.SetImage(null);
+        }
+
+
+        private Image GenerateImage(string imagePath)
+        {
+            return Image.FromFile(imagePath);
+        }
+
+        private Image GenerateThumb(Image image)
+        {
+            return image.GetThumbnailImage(204, 144, () => { return false; }, IntPtr.Zero);
         }
 
         private void SignalLayerDone()
