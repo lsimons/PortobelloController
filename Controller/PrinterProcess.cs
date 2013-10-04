@@ -16,6 +16,8 @@ namespace Controller
         private bool running = false;
         private Main mainForm;
         private PrinterConnector printerConnection;
+        private List<Image> images;
+        private List<Image> thumbnails;
 
         public PrinterProcess(string slicePath, BeamerOutput form, Main mainForm)
         {
@@ -37,7 +39,6 @@ namespace Controller
                 this.printerConnection.Connect()
             ) {
                 this.printerConnection.Write("START");
-
                 new Thread(Run) { IsBackground = true }.Start();
             } else {
                 this.mainForm.StatusMessage("Failed to connect to server.");
@@ -51,39 +52,15 @@ namespace Controller
             try {
                 // TODO: loads all images into memory, impractical for very large models
                 this.mainForm.StatusMessage("Loading images from " + this.slicePath);
-                var images = LoadImages();
-                var thumbnails = GenerateThumbs(images);
+                this.images = LoadImages();
+                this.thumbnails = GenerateThumbs(this.images);
                 this.mainForm.StatusMessage("Loading complete");
-                for (int i = 0; i < images.Count; i++) {
-                    WaitForClient();
-                    if (!this.running) {
-                        break;
-                    }
-                    Project(images[i], thumbnails[i]);
-                    SignalLayerDone();
-                }
+                ProjectAllImages();
                 SignalDone();
                 this.running = false;
                 this.mainForm.Done();
             } finally {
                 this.printerConnection.Disconnect();
-            }
-        }
-
-        private void WaitForClient()
-        {
-            while (!this.printerConnection.Connected && this.running) {
-                this.mainForm.StatusMessage("Client not connected... pausing");
-                if (this.printerConnection.Connect()) {
-                    this.mainForm.StatusMessage("Client re-connected");
-                    break;
-                } else {
-                    Thread.Sleep(500);
-                }
-            }
-
-            while (!this.printerConnection.PrinterReady && this.running) {
-                this.mainForm.StatusMessage("Printer not ready, waiting.");
             }
         }
 
@@ -114,6 +91,43 @@ namespace Controller
             return list;
         }
 
+        private void ProjectAllImages()
+        {
+            var count = images.Count;
+            this.mainForm.SetTotalSlices(count);
+            var percentageDone = 0;
+            for (int i = 0; i < count; i++) {
+                this.mainForm.SetCurrentSlice(i);
+                WaitForClient();
+                if (!this.running) {
+                    break;
+                }
+                Project(images[i], thumbnails[i]);
+                SignalLayerDone();
+                percentageDone = UpdatePercentageDone(count, percentageDone, i);
+            }
+        }
+
+        private void WaitForClient()
+        {
+            Thread.Sleep(100); // Make sure printer has time to update status after last command
+            while (this.Pause && this.running) {
+                Thread.Sleep(250);
+            }
+            while (this.running && !this.printerConnection.Connected) {
+                this.mainForm.StatusMessage("Client not connected... pausing");
+                if (this.printerConnection.Connect()) {
+                    this.mainForm.StatusMessage("Client re-connected");
+                    break;
+                } else {
+                    Thread.Sleep(500);
+                }
+            }
+            while (this.running && !this.printerConnection.PrinterReady) {
+                this.mainForm.StatusMessage("Printer not ready, waiting.");
+            }
+        }
+
         private void Project(Image image, Image thumb)
         {
             this.mainForm.SetThumbnail(thumb);
@@ -127,9 +141,21 @@ namespace Controller
             this.printerConnection.Write("PULSE");
         }
 
+        private int UpdatePercentageDone(int totalCount, int currentPercentageDone, int processedIndex)
+        {
+            var curPercent = (int)Math.Ceiling(((processedIndex + 1) / (decimal)totalCount) * 100);
+            if (curPercent > currentPercentageDone) {
+                currentPercentageDone = curPercent;
+                this.mainForm.SetProgress(currentPercentageDone);
+            }
+            return currentPercentageDone;
+        }
+
         private void SignalDone()
         {
             this.printerConnection.Write("DONE");
         }
+
+        public bool Pause { get; set; }
     }
 }
