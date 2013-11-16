@@ -17,7 +17,14 @@ namespace Controller
         private Main mainForm;
         private PrinterConnector printerConnection;
         private List<string> images;
+        private Dictionary<string, Image> imageBuffer;
         private int projectionTimeMs = 1000;
+        private int projectionTimeMsFirstGroup = -1;
+        private int projectionTimeMsFirstGroupCount = -1;
+        private int projectionTimeMsSecondGroup = -1;
+        private int projectionTimeMsSecondGroupCount = -1;
+
+        private object bufferLock = new object();
 
         public PrinterProcess(string slicePath, BeamerOutput form, Main mainForm)
         {
@@ -25,6 +32,7 @@ namespace Controller
             this.beamerForm = form;
             this.mainForm = mainForm;
             this.printerConnection = new PrinterConnector();
+            this.imageBuffer = new Dictionary<string, Image>();
         }
 
         internal void Stop()
@@ -59,6 +67,9 @@ namespace Controller
                 this.mainForm.StatusMessage("Loading images list " + this.slicePath);
                 this.images = LoadImages();
                 this.mainForm.StatusMessage("Loading complete");
+                var bufferThread = new Thread(FillBufferThread);
+                bufferThread.IsBackground = true;
+                bufferThread.Start();
                 ProjectAllImages();
                 SignalDone();
                 this.running = false;
@@ -69,6 +80,24 @@ namespace Controller
                 this.mainForm.Done();
             } finally {
                 this.printerConnection.Disconnect();
+            }
+        }
+
+        private void FillBufferThread()
+        {
+            lock (imageBuffer) {
+                imageBuffer = new Dictionary<string, Image>();
+            }
+            int lastImageLoaded = 0;
+            while (this.running) {
+                lock (imageBuffer) {
+                    while (this.imageBuffer.Count < 10 && images.Count > lastImageLoaded) {
+                        lastImageLoaded++;
+                        var path = images[lastImageLoaded - 1];
+                        imageBuffer[path] = GenerateImage(path);
+                    }
+                }
+                Thread.Sleep(1000);
             }
         }
 
@@ -132,17 +161,42 @@ namespace Controller
 
         private void Project(string imagePath)
         {
-            var image = GenerateImage(imagePath);
+            var image = GetImage(imagePath);
             this.mainForm.SetThumbnail(image);
             this.beamerForm.SetImage(image);
-            Thread.Sleep(projectionTimeMs);
+            if (this.projectionTimeMsFirstGroupCount > 0) {
+                this.projectionTimeMsFirstGroupCount--;
+                Thread.Sleep(this.projectionTimeMsFirstGroup);
+            } else if (this.projectionTimeMsSecondGroupCount > 0) {
+                this.projectionTimeMsSecondGroupCount--; 
+                Thread.Sleep(this.projectionTimeMsSecondGroupCount);
+            } else {
+                Thread.Sleep(this.projectionTimeMs);
+            }
             this.beamerForm.SetImage(null);
+            RemoveFromBuffer(imagePath);
         }
 
+        private Image GetImage(string imagePath)
+        {
+            lock (this.bufferLock) {
+                if (!this.imageBuffer.ContainsKey(imagePath)) {
+                    this.imageBuffer[imagePath] = GenerateImage(imagePath);
+                }
+                return this.imageBuffer[imagePath];
+            }
+        }
 
         private Image GenerateImage(string imagePath)
         {
             return Image.FromFile(imagePath);
+        }
+
+        private void RemoveFromBuffer(string imagePath)
+        {
+            lock (this.bufferLock) {
+                this.imageBuffer.Remove(imagePath);
+            }
         }
 
         private Image GenerateThumb(Image image)
@@ -176,6 +230,28 @@ namespace Controller
         {
             if (!this.running || this.Pause) {
                 this.projectionTimeMs = projectionTimeMs;
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        internal bool SetProjectionTimeFirstGroup(int projectionTimeMs, int layerCount)
+        {
+            if (!this.running) {
+                this.projectionTimeMsFirstGroup = projectionTimeMs;
+                this.projectionTimeMsFirstGroupCount = layerCount;
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        internal bool SetProjectionTimeSecondGroup(int projectionTimeMs, int layerCount)
+        {
+            if (!this.running) {
+                this.projectionTimeMsSecondGroup = projectionTimeMs;
+                this.projectionTimeMsSecondGroupCount = layerCount;
                 return true;
             } else {
                 return false;

@@ -28,9 +28,12 @@ namespace Controller
                 if (this.Connected) {
                     byte[] response = new byte[256];
                     try {
-                        this.connection.Client.Receive(response);
-                        response = new byte[256];
-                    } catch (SocketException) {
+                        if (this.connection.Available > 0) {
+                            this.connection.Client.Receive(response);
+                            response = new byte[256];
+                        }
+                    } catch (SocketException ex) {
+                        
                     }
                     this.Write("GET_READY_STATUS");
                     try {

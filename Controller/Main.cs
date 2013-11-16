@@ -59,7 +59,13 @@ namespace Controller
         {
             if (this.processor == null) {
                 this.processor = new PrinterProcess(sliceFolderDlg.SelectedPath, this.beamerForm, this);
-                this.processor.SetProjectionTime(projectionTimeMs);
+                this.processor.SetProjectionTime(this.projectionTimeMs);
+                if (this.projectionTimeMsFirstGroup > 0) {
+                    this.processor.SetProjectionTimeFirstGroup(this.projectionTimeMsFirstGroup, this.projectionTimeMsFirstGroupCount);
+                }
+                if (this.projectionTimeMsSecondGroup > 0) {
+                    this.processor.SetProjectionTimeSecondGroup(this.projectionTimeMsSecondGroup, this.projectionTimeMsSecondGroupCount);
+                }
                 btnStart.Text = "Stop";
                 this.processor.Start();
             } else {
@@ -112,20 +118,78 @@ namespace Controller
         private void txtProjectionTimeMs_TextChanged(object sender, EventArgs e)
         {
             var oldValue = txtProjectionTimeMs.Text;
-            var timeMs = Regex.Replace(txtProjectionTimeMs.Text, @"[^0-9]", "");
-            if (!string.IsNullOrWhiteSpace(timeMs)) {
-                projectionTimeMs = int.Parse(timeMs);
-            } else {
-                projectionTimeMs = 1000;
-                return;
-            }
+            this.projectionTimeMs = ValidateTextInputIsNumberAndReturnValue(txtProjectionTimeMs, 1000);
             if (this.processor != null) {
                 if (!this.processor.SetProjectionTime(projectionTimeMs)) {
-                    projectionTimeMs = int.Parse(oldValue);
+                    this.projectionTimeMs = int.Parse(oldValue);
+                    this.txtProjectionTimeMs.Text = oldValue;
                 }
             }
-            txtProjectionTimeMs.Text = projectionTimeMs.ToString();
         }
+
+        private int ValidateTextInputIsNumberAndReturnValue(TextBox txtBox, int defaultValue)
+        {
+            int value = defaultValue;
+            var timeMs = Regex.Replace(txtBox.Text, @"[^0-9]", "");
+            if (!string.IsNullOrWhiteSpace(timeMs)) {
+                value = int.Parse(timeMs);
+            } 
+            txtBox.Text = value.ToString();
+            return value;
+        }
+
+        private int projectionTimeMsFirstGroup = -1;
+        private int projectionTimeMsFirstGroupCount = -1;
+        private void txtProjectionTimeMsFirstGroup_TextChanged(object sender, EventArgs e)
+        {
+            var oldValue = txtProjectionTimeMsFirstGroup.Text;
+            this.projectionTimeMs = ValidateTextInputIsNumberAndReturnValue(txtProjectionTimeMsFirstGroup, 1000);
+            if (this.processor != null && this.projectionTimeMsFirstGroupCount > 0) {
+                if (!this.processor.SetProjectionTimeFirstGroup(this.projectionTimeMsFirstGroup, this.projectionTimeMsFirstGroupCount)) {
+                    this.projectionTimeMsFirstGroup = int.Parse(oldValue);
+                    this.txtProjectionTimeMsFirstGroup.Text = oldValue;
+                }
+            }
+        }
+
+        private void txtFirstGroupCount_TextChanged(object sender, EventArgs e)
+        {
+            var oldValue = txtFirstGroupCount.Text;
+            this.projectionTimeMsFirstGroupCount = ValidateTextInputIsNumberAndReturnValue(txtFirstGroupCount, 20);
+            if (this.processor != null && this.projectionTimeMsFirstGroup > 0) {
+                if (!this.processor.SetProjectionTimeFirstGroup(this.projectionTimeMsFirstGroup, this.projectionTimeMsFirstGroupCount)) {
+                    this.projectionTimeMsFirstGroupCount = int.Parse(oldValue);
+                    this.txtFirstGroupCount.Text = oldValue;
+                }
+            }
+        }
+
+        private int projectionTimeMsSecondGroup = -1;
+        private int projectionTimeMsSecondGroupCount = -1;
+        private void txtProjectionTimeMsSecondGroup_TextChanged(object sender, EventArgs e)
+        {
+            var oldValue = txtProjectionTimeMsSecondGroup.Text;
+            this.projectionTimeMs = ValidateTextInputIsNumberAndReturnValue(txtProjectionTimeMsSecondGroup, 1000);
+            if (this.processor != null && this.projectionTimeMsSecondGroupCount > 0) {
+                if (!this.processor.SetProjectionTimeSecondGroup(this.projectionTimeMsSecondGroup, this.projectionTimeMsSecondGroupCount)) {
+                    this.projectionTimeMsSecondGroup = int.Parse(oldValue);
+                    this.txtProjectionTimeMsSecondGroup.Text = oldValue;
+                }
+            }
+        }
+
+        private void txtSecondGroupCount_TextChanged(object sender, EventArgs e)
+        {
+            var oldValue = txtSecondGroupCount.Text;
+            this.projectionTimeMsSecondGroupCount = ValidateTextInputIsNumberAndReturnValue(txtSecondGroupCount, 20);
+            if (this.processor != null && this.projectionTimeMsSecondGroup > 0) {
+                if (!this.processor.SetProjectionTimeSecondGroup(this.projectionTimeMsSecondGroup, this.projectionTimeMsSecondGroupCount)) {
+                    this.projectionTimeMsSecondGroupCount = int.Parse(oldValue);
+                    this.txtSecondGroupCount.Text = oldValue;
+                }
+            }
+        }
+
 
         private void btnPause_Click(object sender, EventArgs e)
         {
@@ -182,6 +246,11 @@ namespace Controller
             } else {
                 txtCurrentSlice.Text = current.ToString("000000");
             }
+        }
+
+        private void Main_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }
