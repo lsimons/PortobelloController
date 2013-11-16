@@ -56,16 +56,18 @@
             this.label11 = new System.Windows.Forms.Label();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.newToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveAsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.newToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.label12 = new System.Windows.Forms.Label();
+            this.txtTimeRemaining = new System.Windows.Forms.Label();
             this.label13 = new System.Windows.Forms.Label();
-            this.label14 = new System.Windows.Forms.Label();
+            this.txtTimePassed = new System.Windows.Forms.Label();
             this.label15 = new System.Windows.Forms.Label();
+            this.simulatePrinterToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             ((System.ComponentModel.ISupportInitialize)(this.pbLayerThumbnail)).BeginInit();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -121,7 +123,7 @@
             this.txtStatus.Name = "txtStatus";
             this.txtStatus.ReadOnly = true;
             this.txtStatus.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.txtStatus.Size = new System.Drawing.Size(315, 184);
+            this.txtStatus.Size = new System.Drawing.Size(315, 208);
             this.txtStatus.TabIndex = 5;
             this.txtStatus.WordWrap = false;
             // 
@@ -129,7 +131,7 @@
             // 
             this.pbLayerThumbnail.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.pbLayerThumbnail.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.pbLayerThumbnail.Location = new System.Drawing.Point(337, 195);
+            this.pbLayerThumbnail.Location = new System.Drawing.Point(337, 219);
             this.pbLayerThumbnail.Name = "pbLayerThumbnail";
             this.pbLayerThumbnail.Size = new System.Drawing.Size(205, 144);
             this.pbLayerThumbnail.TabIndex = 0;
@@ -178,7 +180,7 @@
             // 
             this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(334, 179);
+            this.label3.Location = new System.Drawing.Point(334, 203);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(35, 13);
             this.label3.TabIndex = 11;
@@ -188,7 +190,7 @@
             // 
             this.txtCurrentSlice.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.txtCurrentSlice.AutoSize = true;
-            this.txtCurrentSlice.Location = new System.Drawing.Point(448, 179);
+            this.txtCurrentSlice.Location = new System.Drawing.Point(448, 203);
             this.txtCurrentSlice.Name = "txtCurrentSlice";
             this.txtCurrentSlice.Size = new System.Drawing.Size(43, 13);
             this.txtCurrentSlice.TabIndex = 12;
@@ -198,7 +200,7 @@
             // 
             this.label5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(489, 179);
+            this.label5.Location = new System.Drawing.Point(489, 203);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(12, 13);
             this.label5.TabIndex = 13;
@@ -208,7 +210,7 @@
             // 
             this.txtTotalSlices.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.txtTotalSlices.AutoSize = true;
-            this.txtTotalSlices.Location = new System.Drawing.Point(499, 179);
+            this.txtTotalSlices.Location = new System.Drawing.Point(499, 203);
             this.txtTotalSlices.Name = "txtTotalSlices";
             this.txtTotalSlices.Size = new System.Drawing.Size(43, 13);
             this.txtTotalSlices.TabIndex = 14;
@@ -334,27 +336,35 @@
             this.newToolStripMenuItem,
             this.openToolStripMenuItem,
             this.saveToolStripMenuItem,
-            this.saveAsToolStripMenuItem});
+            this.saveAsToolStripMenuItem,
+            this.toolStripSeparator1,
+            this.simulatePrinterToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             this.fileToolStripMenuItem.Text = "File";
             // 
+            // newToolStripMenuItem
+            // 
+            this.newToolStripMenuItem.Name = "newToolStripMenuItem";
+            this.newToolStripMenuItem.Size = new System.Drawing.Size(158, 22);
+            this.newToolStripMenuItem.Text = "New";
+            // 
             // openToolStripMenuItem
             // 
             this.openToolStripMenuItem.Name = "openToolStripMenuItem";
-            this.openToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.openToolStripMenuItem.Size = new System.Drawing.Size(158, 22);
             this.openToolStripMenuItem.Text = "Open";
             // 
             // saveToolStripMenuItem
             // 
             this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
-            this.saveToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.saveToolStripMenuItem.Size = new System.Drawing.Size(158, 22);
             this.saveToolStripMenuItem.Text = "Save";
             // 
             // saveAsToolStripMenuItem
             // 
             this.saveAsToolStripMenuItem.Name = "saveAsToolStripMenuItem";
-            this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(158, 22);
             this.saveAsToolStripMenuItem.Text = "Save As...";
             // 
             // helpToolStripMenuItem
@@ -368,44 +378,38 @@
             // aboutToolStripMenuItem
             // 
             this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
             this.aboutToolStripMenuItem.Text = "About";
             // 
-            // newToolStripMenuItem
+            // txtTimeRemaining
             // 
-            this.newToolStripMenuItem.Name = "newToolStripMenuItem";
-            this.newToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.newToolStripMenuItem.Text = "New";
-            // 
-            // label12
-            // 
-            this.label12.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(508, 160);
-            this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(34, 13);
-            this.label12.TabIndex = 30;
-            this.label12.Text = "00:00";
+            this.txtTimeRemaining.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtTimeRemaining.AutoSize = true;
+            this.txtTimeRemaining.Location = new System.Drawing.Point(493, 180);
+            this.txtTimeRemaining.Name = "txtTimeRemaining";
+            this.txtTimeRemaining.Size = new System.Drawing.Size(49, 13);
+            this.txtTimeRemaining.TabIndex = 30;
+            this.txtTimeRemaining.Text = "00:00:00";
             // 
             // label13
             // 
             this.label13.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label13.AutoSize = true;
-            this.label13.Location = new System.Drawing.Point(448, 160);
+            this.label13.Location = new System.Drawing.Point(334, 180);
             this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(57, 13);
+            this.label13.Size = new System.Drawing.Size(79, 13);
             this.label13.TabIndex = 29;
-            this.label13.Text = "Remaining";
+            this.label13.Text = "Remaining time";
             // 
-            // label14
+            // txtTimePassed
             // 
-            this.label14.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.label14.AutoSize = true;
-            this.label14.Location = new System.Drawing.Point(408, 160);
-            this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(34, 13);
-            this.label14.TabIndex = 28;
-            this.label14.Text = "00:00";
+            this.txtTimePassed.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtTimePassed.AutoSize = true;
+            this.txtTimePassed.Location = new System.Drawing.Point(493, 160);
+            this.txtTimePassed.Name = "txtTimePassed";
+            this.txtTimePassed.Size = new System.Drawing.Size(49, 13);
+            this.txtTimePassed.TabIndex = 28;
+            this.txtTimePassed.Text = "00:00:00";
             // 
             // label15
             // 
@@ -417,14 +421,26 @@
             this.label15.TabIndex = 27;
             this.label15.Text = "Total time";
             // 
+            // simulatePrinterToolStripMenuItem
+            // 
+            this.simulatePrinterToolStripMenuItem.Name = "simulatePrinterToolStripMenuItem";
+            this.simulatePrinterToolStripMenuItem.Size = new System.Drawing.Size(158, 22);
+            this.simulatePrinterToolStripMenuItem.Text = "Simulate printer";
+            this.simulatePrinterToolStripMenuItem.Click += new System.EventHandler(this.simulatePrinterToolStripMenuItem_Click);
+            // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(155, 6);
+            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(554, 351);
-            this.Controls.Add(this.label12);
+            this.ClientSize = new System.Drawing.Size(554, 375);
+            this.Controls.Add(this.txtTimeRemaining);
             this.Controls.Add(this.label13);
-            this.Controls.Add(this.label14);
+            this.Controls.Add(this.txtTimePassed);
             this.Controls.Add(this.label15);
             this.Controls.Add(this.label11);
             this.Controls.Add(this.label9);
@@ -503,10 +519,12 @@
         private System.Windows.Forms.ToolStripMenuItem saveAsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
-        private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.Label txtTimeRemaining;
         private System.Windows.Forms.Label label13;
-        private System.Windows.Forms.Label label14;
+        private System.Windows.Forms.Label txtTimePassed;
         private System.Windows.Forms.Label label15;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+        private System.Windows.Forms.ToolStripMenuItem simulatePrinterToolStripMenuItem;
 
     }
 }

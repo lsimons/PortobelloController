@@ -49,11 +49,13 @@
             this.BackColor = System.Drawing.Color.Black;
             this.ClientSize = new System.Drawing.Size(606, 469);
             this.Controls.Add(this.pbFront);
+            this.Cursor = System.Windows.Forms.Cursors.IBeam;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "BeamerOutput";
             this.Text = "Beamer Output Window";
             this.TopMost = true;
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.BeamerOutput_FormClosing);
             ((System.ComponentModel.ISupportInitialize)(this.pbFront)).EndInit();
             this.ResumeLayout(false);
 

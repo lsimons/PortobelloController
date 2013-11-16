@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -30,6 +31,7 @@ namespace Controller
             } else {
                 beamerForm.WindowState = FormWindowState.Normal;
                 beamerForm.FormBorderStyle = FormBorderStyle.Sizable;
+                beamerForm.TopMost = false;
                 bounds = new Rectangle(500, 10, 400, 400);
             }
             this.beamerForm.SetBounds(bounds.X, bounds.Y, bounds.Width, bounds.Height);
@@ -55,6 +57,7 @@ namespace Controller
             }
         }
 
+        private DateTime startTime = DateTime.Now;
         private void btnStart_Click(object sender, EventArgs e)
         {
             if (this.processor == null) {
@@ -68,6 +71,7 @@ namespace Controller
                 }
                 btnStart.Text = "Stop";
                 this.processor.Start();
+                this.startTime = DateTime.Now;
             } else {
                 this.processor.Stop();
             }
@@ -190,7 +194,6 @@ namespace Controller
             }
         }
 
-
         private void btnPause_Click(object sender, EventArgs e)
         {
             if (processor == null) {
@@ -200,6 +203,7 @@ namespace Controller
             if (processor.Pause) {
                 btnPause.Text = "Continue";
             } else {
+                txtTimeRemaining.Text = CalculateRemainingTime();
                 btnPause.Text = "Pause";
             }
         }
@@ -227,30 +231,59 @@ namespace Controller
         }
 
         private delegate void SetTotalSlicesInvoker(int total);
+        private int totalSlices = 0;
         internal void SetTotalSlices(int total)
         {
             if (this.InvokeRequired) {
                 var invoker = new SetTotalSlicesInvoker(SetTotalSlices);
                 this.Invoke(invoker, total);
             } else {
+                this.totalSlices = total;
                 txtTotalSlices.Text = total.ToString("000000");
+                txtTimeRemaining.Text = CalculateRemainingTime();
+                txtTimePassed.Text = CalculateTimePassed();
             }
         }
 
+        private int EXPECTED_PRINTER_BUSY_TIME = 1800;
+        private string CalculateRemainingTime()
+        {
+            var remainingMs = (this.totalSlices - this.currentSlice) * (double)(projectionTimeMs + EXPECTED_PRINTER_BUSY_TIME);
+            var timeSpan = TimeSpan.FromMilliseconds(remainingMs);
+            return timeSpan.ToString(@"hh\:mm\:ss");
+        }
+
         private delegate void SetCurrentSliceInvoker(int current);
+        private int currentSlice = 0;
         internal void SetCurrentSlice(int current)
         {
             if (this.InvokeRequired) {
                 var invoker = new SetCurrentSliceInvoker(SetCurrentSlice);
                 this.Invoke(invoker, current);
             } else {
+                this.currentSlice = current;
                 txtCurrentSlice.Text = current.ToString("000000");
+                txtTimeRemaining.Text = CalculateRemainingTime();
+                txtTimePassed.Text = CalculateTimePassed();
             }
+        }
+
+        private string CalculateTimePassed()
+        {
+            var timePassed = DateTime.Now - startTime;
+            return timePassed.ToString(@"hh\:mm\:ss");
         }
 
         private void Main_Load(object sender, EventArgs e)
         {
 
+        }
+
+        private void simulatePrinterToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Process proc = new Process();
+            proc.StartInfo.FileName = "PrinterTcpServerMock.exe";
+            proc.Start();
         }
     }
 }

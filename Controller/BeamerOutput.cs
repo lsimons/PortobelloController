@@ -28,5 +28,10 @@ namespace Controller
                 pbFront.BackgroundImage = img;
             }
         }
+
+        private void BeamerOutput_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            e.Cancel = true;
+        }
     }
 }

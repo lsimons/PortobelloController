@@ -152,10 +152,10 @@ namespace Controller
             int notReadyCount = 0;
             while (this.running && !this.printerConnection.PrinterReady) {
                 notReadyCount++;
-                if ((notReadyCount = notReadyCount % 10) == 0) {
+                if ((notReadyCount = notReadyCount % 20) == 0) {
                     this.mainForm.StatusMessage("Printer not ready, waiting.");
                 }
-                Thread.Sleep(100);
+                Thread.Sleep(200);
             }
         }
 
