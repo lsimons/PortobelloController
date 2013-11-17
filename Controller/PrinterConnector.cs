@@ -32,7 +32,7 @@ namespace Controller
                             this.connection.Client.Receive(response);
                             response = new byte[256];
                         }
-                    } catch (SocketException ex) {
+                    } catch (SocketException) {
                         
                     }
                     this.Write("GET_READY_STATUS");

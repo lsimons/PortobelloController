@@ -169,7 +169,7 @@ namespace Controller
                 Thread.Sleep(this.projectionTimeMsFirstGroup);
             } else if (this.projectionTimeMsSecondGroupCount > 0) {
                 this.projectionTimeMsSecondGroupCount--; 
-                Thread.Sleep(this.projectionTimeMsSecondGroupCount);
+                Thread.Sleep(this.projectionTimeMsSecondGroup);
             } else {
                 Thread.Sleep(this.projectionTimeMs);
             }

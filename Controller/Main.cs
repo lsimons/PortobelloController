@@ -147,7 +147,7 @@ namespace Controller
         private void txtProjectionTimeMsFirstGroup_TextChanged(object sender, EventArgs e)
         {
             var oldValue = txtProjectionTimeMsFirstGroup.Text;
-            this.projectionTimeMs = ValidateTextInputIsNumberAndReturnValue(txtProjectionTimeMsFirstGroup, 1000);
+            this.projectionTimeMsFirstGroup = ValidateTextInputIsNumberAndReturnValue(txtProjectionTimeMsFirstGroup, 1000);
             if (this.processor != null && this.projectionTimeMsFirstGroupCount > 0) {
                 if (!this.processor.SetProjectionTimeFirstGroup(this.projectionTimeMsFirstGroup, this.projectionTimeMsFirstGroupCount)) {
                     this.projectionTimeMsFirstGroup = int.Parse(oldValue);
@@ -173,7 +173,7 @@ namespace Controller
         private void txtProjectionTimeMsSecondGroup_TextChanged(object sender, EventArgs e)
         {
             var oldValue = txtProjectionTimeMsSecondGroup.Text;
-            this.projectionTimeMs = ValidateTextInputIsNumberAndReturnValue(txtProjectionTimeMsSecondGroup, 1000);
+            this.projectionTimeMsSecondGroup = ValidateTextInputIsNumberAndReturnValue(txtProjectionTimeMsSecondGroup, 1000);
             if (this.processor != null && this.projectionTimeMsSecondGroupCount > 0) {
                 if (!this.processor.SetProjectionTimeSecondGroup(this.projectionTimeMsSecondGroup, this.projectionTimeMsSecondGroupCount)) {
                     this.projectionTimeMsSecondGroup = int.Parse(oldValue);
