@@ -28,10 +28,8 @@ namespace Controller
                 if (this.Connected) {
                     byte[] response = new byte[256];
                     try {
-                        if (this.connection.Available > 0) {
-                            this.connection.Client.Receive(response);
-                            response = new byte[256];
-                        }
+                        this.connection.Client.Receive(response);
+                        response = new byte[256];
                     } catch (SocketException) {
                         
                     }
@@ -63,7 +61,8 @@ namespace Controller
             }
             try {
                 this.connection = new TcpClient("localhost", 5473);
-                this.connection.ReceiveTimeout = 3000;
+                this.connection.ReceiveTimeout = 200;
+                this.connection.Client.ReceiveTimeout = 200;
                 return true;
             } catch (SocketException) {
                 return false;
