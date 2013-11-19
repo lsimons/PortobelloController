@@ -43,7 +43,7 @@ namespace Controller
                     }
                     var message = Encoding.ASCII.GetString(response);
                     
-                    if (message.ToLower().Contains("ready")) {
+                    if (message.Trim().ToLower() == "ready") {
                         return true;
                     } else {
                         return false;
@@ -62,7 +62,6 @@ namespace Controller
             try {
                 this.connection = new TcpClient("localhost", 5473);
                 this.connection.ReceiveTimeout = 200;
-                this.connection.Client.ReceiveTimeout = 200;
                 return true;
             } catch (SocketException) {
                 return false;
