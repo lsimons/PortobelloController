@@ -61,17 +61,21 @@ namespace Controller
         private void btnStart_Click(object sender, EventArgs e)
         {
             if (this.processor == null) {
-                this.processor = new PrinterProcess(sliceFolderDlg.SelectedPath, this.beamerForm, this);
-                this.processor.SetProjectionTime(this.projectionTimeMs);
-                if (this.projectionTimeMsFirstGroup > 0) {
-                    this.processor.SetProjectionTimeFirstGroup(this.projectionTimeMsFirstGroup, this.projectionTimeMsFirstGroupCount);
+                if (string.IsNullOrWhiteSpace(sliceFolderDlg.SelectedPath)) {
+                    MessageBox.Show("Select a folder with images first.");
+                } else {
+                    this.processor = new PrinterProcess(sliceFolderDlg.SelectedPath, this.beamerForm, this);
+                    this.processor.SetProjectionTime(this.projectionTimeMs);
+                    if (this.projectionTimeMsFirstGroup > 0) {
+                        this.processor.SetProjectionTimeFirstGroup(this.projectionTimeMsFirstGroup, this.projectionTimeMsFirstGroupCount);
+                    }
+                    if (this.projectionTimeMsSecondGroup > 0) {
+                        this.processor.SetProjectionTimeSecondGroup(this.projectionTimeMsSecondGroup, this.projectionTimeMsSecondGroupCount);
+                    }
+                    btnStart.Text = "Stop";
+                    this.processor.Start();
+                    this.startTime = DateTime.Now;
                 }
-                if (this.projectionTimeMsSecondGroup > 0) {
-                    this.processor.SetProjectionTimeSecondGroup(this.projectionTimeMsSecondGroup, this.projectionTimeMsSecondGroupCount);
-                }
-                btnStart.Text = "Stop";
-                this.processor.Start();
-                this.startTime = DateTime.Now;
             } else {
                 this.processor.Stop();
             }
@@ -137,7 +141,7 @@ namespace Controller
             var timeMs = Regex.Replace(txtBox.Text, @"[^0-9]", "");
             if (!string.IsNullOrWhiteSpace(timeMs)) {
                 value = int.Parse(timeMs);
-            } 
+            }
             txtBox.Text = value.ToString();
             return value;
         }

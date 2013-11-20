@@ -27,11 +27,9 @@ namespace Controller
             {
                 if (this.Connected) {
                     byte[] response = new byte[256];
-                    try {
+                    if (this.connection.Available > 0) {
                         this.connection.Client.Receive(response);
                         response = new byte[256];
-                    } catch (SocketException) {
-                        
                     }
                     this.Write("GET_READY_STATUS");
                     try {
@@ -42,7 +40,8 @@ namespace Controller
                         return false;
                     }
                     var message = Encoding.ASCII.GetString(response);
-                    
+                    int i = message.IndexOf('\0');
+                    if (i >= 0) message = message.Substring(0, i);
                     if (message.Trim().ToLower() == "ready") {
                         return true;
                     } else {
@@ -62,6 +61,10 @@ namespace Controller
             try {
                 this.connection = new TcpClient("localhost", 5473);
                 this.connection.ReceiveTimeout = 200;
+                byte[] response = new byte[256];
+                try {
+                    this.connection.Client.Receive(response);
+                } catch (SocketException) { }
                 return true;
             } catch (SocketException) {
                 return false;
@@ -80,8 +83,9 @@ namespace Controller
         {
             if (this.Connected) {
                 try {
-                    var data = Encoding.ASCII.GetBytes(message);
+                    var data = Encoding.ASCII.GetBytes(message + "\0");
                     this.connection.Client.Send(data, data.Length, SocketFlags.None);
+                    Thread.Sleep(100); // Need to wait for server to receive a bit longer (found during debugging profilab)
                 } catch (Exception) {
                     this.connection = null;
                 }
