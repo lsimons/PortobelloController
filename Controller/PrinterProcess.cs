@@ -15,7 +15,7 @@ namespace Controller
         private BeamerOutput beamerForm;
         private bool running = false;
         private Main mainForm;
-        private PrinterConnector printerConnection;
+        private IPrinterInterface printerInterface;
         private List<string> images;
         private Dictionary<string, Image> imageBuffer;
         private int projectionTimeMs = 1000;
@@ -28,10 +28,20 @@ namespace Controller
 
         public PrinterProcess(string slicePath, BeamerOutput form, Main mainForm)
         {
+            InitializePrinterProcess(slicePath, form, mainForm, new LabjackPrinterInterface());
+        }
+
+        public PrinterProcess(string slicePath, BeamerOutput form, Main mainForm, IPrinterInterface printerInterface)
+        {
+            InitializePrinterProcess(slicePath, form, mainForm, printerInterface);
+        }
+
+        private void InitializePrinterProcess(string slicePath, BeamerOutput form, Main mainForm, IPrinterInterface printerInterface)
+        {
             this.slicePath = slicePath;
             this.beamerForm = form;
             this.mainForm = mainForm;
-            this.printerConnection = new PrinterConnector();
+            this.printerInterface = printerInterface;
             this.imageBuffer = new Dictionary<string, Image>();
         }
 
@@ -43,10 +53,11 @@ namespace Controller
         internal void Start()
         {
             this.running = true;
-            if (this.printerConnection.Connected || 
-                this.printerConnection.Connect()
+            string error;
+            if (this.printerInterface.Connected ||
+                this.printerInterface.TryConnect(out error)
             ) {
-                this.printerConnection.Write("START");
+                this.mainForm.StatusMessage("Printer connected");
                 try {
                     new Thread(Run) { IsBackground = true }.Start();
                 } catch (Exception err) {
@@ -55,7 +66,7 @@ namespace Controller
                     this.mainForm.Done();
                 }
             } else {
-                this.mainForm.StatusMessage("Failed to connect to server.");
+                this.mainForm.StatusMessage("Failed to connect to server: " + error);
                 this.running = false;
                 this.mainForm.Done();
             }
@@ -65,7 +76,10 @@ namespace Controller
         {
             try {
                 this.mainForm.StatusMessage("Loading images list " + this.slicePath);
-                this.images = LoadImages();
+                Task.WaitAll(
+                    LoadImages(),
+                    InitializePrinter()
+                );
                 this.mainForm.StatusMessage("Loading complete");
                 var bufferThread = new Thread(FillBufferThread);
                 bufferThread.IsBackground = true;
@@ -78,8 +92,34 @@ namespace Controller
                 this.mainForm.StatusMessage("Unknown error." + Environment.NewLine + err.ToString());
                 this.running = false;
                 this.mainForm.Done();
+            }
+        }
+
+        private async Task LoadImages()
+        {
+            var imageTypes = new string[] { ".bmp", ".png", ".jpg", ".jpeg", ".tif" };
+            this.images = await new Task<List<string>>(() => {
+                return Directory.GetFiles(this.slicePath)
+                .Where(fileName =>
+                    imageTypes.Contains(Path.GetExtension(fileName).ToLower())
+                )
+                .OrderBy(fileName => fileName)
+                .ToList();
+            });
+        }
+
+        private async Task InitializePrinter()
+        {
+            try {
+                await new Task(() => {
+                    this.printerInterface.ResinPump = true;
+                    this.printerInterface.MoveLiftToTop();
+                    this.printerInterface.MoveLiftDown(7000);
+                    this.printerInterface.MoveLiftUp(500);
+                });
+                await Task.Delay(1000);
             } finally {
-                this.printerConnection.Disconnect();
+                this.printerInterface.ResinPump = false;
             }
         }
 
@@ -101,64 +141,38 @@ namespace Controller
             }
         }
 
-        private List<string> LoadImages()
-        {
-            var list = new List<string>();
-            var imageTypes = new string[] { ".bmp", ".png", ".jpg", ".jpeg", ".tif" };
-            var files = Directory
-                .GetFiles(this.slicePath)
-                .Where(fileName =>
-                    imageTypes.Contains(Path.GetExtension(fileName).ToLower())
-                )
-                .OrderBy(fileName => fileName);
-            foreach (var imageFile in files) {
-                list.Add(imageFile);
-            }
-            return list;
-        }
-
         private void ProjectAllImages()
         {
             var count = images.Count;
             this.mainForm.SetTotalSlices(count);
             var percentageDone = 0;
             for (int i = 0; i < count; i++) {
-                WaitForClient();
                 this.mainForm.SetCurrentSlice(i+1);
                 if (!this.running) {
                     break;
                 }
                 Project(images[i]);
-                SignalLayerDone();
+                MoveLift(i);
                 percentageDone = UpdatePercentageDone(count, percentageDone, i);
             }
         }
 
-        private void WaitForClient()
+        private void MoveLift(int layer)
         {
-            Thread.Sleep(50); // Make sure printer has time to update status after last command
-            while (this.Pause && this.running) {
-                Thread.Sleep(250);
+            if (this.printerInterface.BottomSensor) {
+                throw new Exception("Maximum print size reached.");
             }
-            while (this.running && !this.printerConnection.Connected) {
-                this.mainForm.StatusMessage("Client not connected... pausing");
-                if (this.printerConnection.Connect()) {
-                    this.mainForm.StatusMessage("Client re-connected");
-                    break;
-                } else {
-                    Thread.Sleep(200);
-                }
+            if (layer < 4) {
+                Thread.Sleep(1000);
+            } else if (layer < 12) {
+                this.printerInterface.MoveLiftDown(30);
+            } else {
+                this.printerInterface.MoveLiftDown(10000);
+                this.printerInterface.MoveLiftUp(9930);
             }
-            int notReadyCount = 0;
-            while (this.running && !this.printerConnection.PrinterReady) {
-                notReadyCount++;
-                if ((notReadyCount = notReadyCount % 40) == 0) {
-                    this.mainForm.StatusMessage("Printer not ready, waiting.");
-                }
-                Thread.Sleep(200);
-            }
+            Thread.Sleep(200);
         }
-
+        
         private void Project(string imagePath)
         {
             var image = GetImage(imagePath);
@@ -204,11 +218,6 @@ namespace Controller
             return image.GetThumbnailImage(204, 144, () => { return false; }, IntPtr.Zero);
         }
 
-        private void SignalLayerDone()
-        {
-            this.printerConnection.Write("PULSE");
-        }
-
         private int UpdatePercentageDone(int totalCount, int currentPercentageDone, int processedIndex)
         {
             var curPercent = (int)Math.Ceiling(((processedIndex + 1) / (decimal)totalCount) * 100);
@@ -221,7 +230,8 @@ namespace Controller
 
         private void SignalDone()
         {
-            this.printerConnection.Write("STOP");
+            this.printerInterface.MoveLiftToTop();
+            this.mainForm.StatusMessage("Lift in top position.");
         }
 
         public bool Pause { get; set; }

@@ -32,6 +32,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="LJUDDotNet, Version=3.39.0.0, Culture=neutral, PublicKeyToken=9d6c109908595016, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Windows\assembly\GAC_MSIL\LJUDDotNet\3.39.0.0__9d6c109908595016\LJUDDotNet.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -50,12 +54,14 @@
     <Compile Include="BeamerOutput.Designer.cs">
       <DependentUpon>BeamerOutput.cs</DependentUpon>
     </Compile>
+    <Compile Include="IPrinterInterface.cs" />
     <Compile Include="Main.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Main.Designer.cs">
       <DependentUpon>Main.cs</DependentUpon>
     </Compile>
+    <Compile Include="LabjackPrinterInterface.cs" />
     <Compile Include="PrinterProcess.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

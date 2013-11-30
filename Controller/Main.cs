@@ -88,7 +88,7 @@ namespace Controller
                 var invoker = new StatusMessageInvoker(StatusMessage);
                 this.Invoke(invoker, message);
             } else {
-                this.txtStatus.AppendText(message + Environment.NewLine);
+                this.txtStatus.AppendText(DateTime.Now.ToString("hh:mm:ss") + message + Environment.NewLine);
             }
         }
 
