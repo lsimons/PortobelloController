@@ -48,6 +48,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AboutForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AboutForm.Designer.cs">
+      <DependentUpon>AboutForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="BeamerOutput.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -62,10 +68,14 @@
       <DependentUpon>Main.cs</DependentUpon>
     </Compile>
     <Compile Include="LabjackPrinterInterface.cs" />
+    <Compile Include="MonitorPrinterStatus.cs" />
     <Compile Include="PrinterProcess.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="PrinterConnector.cs" />
+    <Compile Include="SimulatedPrinterInterface.cs" />
+    <EmbeddedResource Include="AboutForm.resx">
+      <DependentUpon>AboutForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="BeamerOutput.resx">
       <DependentUpon>BeamerOutput.cs</DependentUpon>
     </EmbeddedResource>
@@ -97,12 +107,24 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="favicon.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\PrinterTcpServerMock\PrinterTcpServerMock.csproj">
-      <Project>{561fc11a-a37d-410a-9d2f-1abfbfe6ebed}</Project>
-      <Name>PrinterTcpServerMock</Name>
-    </ProjectReference>
+    <Content Include="icons\continue_after_emergency.png" />
+    <Content Include="icons\emergency_stop.png" />
+    <Content Include="icons\glyphicons_092_tint.png" />
+    <Content Include="icons\glyphicons_092_tint_on.png" />
+    <Content Include="icons\glyphicons_173_play.png" />
+    <Content Include="icons\glyphicons_174_pause.png" />
+    <Content Include="icons\glyphicons_175_stop.png" />
+    <Content Include="icons\glyphicons_181_download_alt.png" />
+    <Content Include="icons\glyphicons_181_download_alt_on.png" />
+    <Content Include="icons\glyphicons_212_down_arrow.png" />
+    <Content Include="icons\glyphicons_213_up_arrow.png" />
+    <Content Include="icons\glyphicons_265_electrical_plug.png" />
+    <Content Include="icons\glyphicons_265_electrical_plug_on.png" />
+    <Content Include="icons\led_blue.png" />
+    <Content Include="icons\led_green.png" />
+    <Content Include="icons\led_off.png" />
+    <Content Include="icons\led_red.png" />
+    <Content Include="icons\led_yellow.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -34,7 +34,12 @@ namespace Controller
         /// Resevoir valve allows resevoir to drain to vat
         /// </summary>
         bool ReservoirValve { get; set; }
-        
+
+        /// <summary>
+        /// Set lift output to be enabled or disabled
+        /// </summary>
+        bool LiftEnabled { get; set; }
+
         /// <summary>
         /// Active when lift is at top position
         /// </summary>
@@ -71,5 +76,10 @@ namespace Controller
         /// Current position in micrometer from top sensor if known, -1 if unknown. Move to top if unknown to set to 0.
         /// </summary>
         int LiftPositionInUMFromTopSensor { get; }
+
+        /// <summary>
+        /// Safely disconnect from the printer
+        /// </summary>
+        void Disconnect();
     }
 }

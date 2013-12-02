@@ -26,6 +26,8 @@ namespace Controller
 
         private object bufferLock = new object();
 
+        public bool Pause { get; set; }
+
         public PrinterProcess(string slicePath, BeamerOutput form, Main mainForm)
         {
             InitializePrinterProcess(slicePath, form, mainForm, new LabjackPrinterInterface());
@@ -76,10 +78,8 @@ namespace Controller
         {
             try {
                 this.mainForm.StatusMessage("Loading images list " + this.slicePath);
-                Task.WaitAll(
-                    LoadImages(),
-                    InitializePrinter()
-                );
+                LoadImages();
+                InitializePrinter();
                 this.mainForm.StatusMessage("Loading complete");
                 var bufferThread = new Thread(FillBufferThread);
                 bufferThread.IsBackground = true;
@@ -95,29 +95,25 @@ namespace Controller
             }
         }
 
-        private async Task LoadImages()
+        private void LoadImages()
         {
             var imageTypes = new string[] { ".bmp", ".png", ".jpg", ".jpeg", ".tif" };
-            this.images = await new Task<List<string>>(() => {
-                return Directory.GetFiles(this.slicePath)
+            this.images = Directory.GetFiles(this.slicePath)
                 .Where(fileName =>
                     imageTypes.Contains(Path.GetExtension(fileName).ToLower())
                 )
                 .OrderBy(fileName => fileName)
                 .ToList();
-            });
         }
 
-        private async Task InitializePrinter()
+        private void InitializePrinter()
         {
             try {
-                await new Task(() => {
-                    this.printerInterface.ResinPump = true;
-                    this.printerInterface.MoveLiftToTop();
-                    this.printerInterface.MoveLiftDown(7000);
-                    this.printerInterface.MoveLiftUp(500);
-                });
-                await Task.Delay(1000);
+                this.printerInterface.ResinPump = true;
+                this.printerInterface.MoveLiftToTop();
+                this.printerInterface.MoveLiftDown(7000);
+                this.printerInterface.MoveLiftUp(500);
+                Thread.Sleep(1000);
             } finally {
                 this.printerInterface.ResinPump = false;
             }
@@ -151,9 +147,13 @@ namespace Controller
                 if (!this.running) {
                     break;
                 }
+                this.mainForm.StatusMessage("Projecting image for layer " + i.ToString());
                 Project(images[i]);
                 MoveLift(i);
                 percentageDone = UpdatePercentageDone(count, percentageDone, i);
+                while (this.Pause) {
+                    Thread.Sleep(200);
+                }
             }
         }
 
@@ -162,13 +162,13 @@ namespace Controller
             if (this.printerInterface.BottomSensor) {
                 throw new Exception("Maximum print size reached.");
             }
-            if (layer < 4) {
+            if (this.projectionTimeMsFirstGroupCount > 0) {
                 Thread.Sleep(1000);
-            } else if (layer < 12) {
+            } else if (this.projectionTimeMsSecondGroupCount > 0) {
                 this.printerInterface.MoveLiftDown(30);
             } else {
-                this.printerInterface.MoveLiftDown(10000);
-                this.printerInterface.MoveLiftUp(9930);
+                this.printerInterface.MoveLiftDown(5000);
+                this.printerInterface.MoveLiftUp(4930);
             }
             Thread.Sleep(200);
         }
@@ -233,8 +233,6 @@ namespace Controller
             this.printerInterface.MoveLiftToTop();
             this.mainForm.StatusMessage("Lift in top position.");
         }
-
-        public bool Pause { get; set; }
 
         internal bool SetProjectionTime(int projectionTimeMs)
         {

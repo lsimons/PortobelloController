@@ -70,35 +70,65 @@ namespace Controller
             // Set outputs
             ResinPump = false;
             ReservoirValve = false;
+            LiftEnabled = true;
         }
 
         public bool Connected { get; private set; }
 
-        private bool resinPump = false;
         public bool ResinPump
         {
             get
             {
-                return this.resinPump;
+                double value = 0;
+                LJUD.eGet(this.labjackBoard.ljhandle, LJUD.IO.GET_DIGITAL_BIT, LabjackPrinterInterface.PUMP_ENABLE_OUT, ref value, 0);
+                if (value == 1) {
+                    return true;
+                } else {
+                    return false;
+                }
             }
             set
             {
-                this.resinPump = value;
-                LJUD.ePut(this.labjackBoard.ljhandle, LJUD.IO.PUT_DIGITAL_BIT, LabjackPrinterInterface.PUMP_ENABLE_OUT, this.resinPump ? 1 : 0, 0);
+                LJUD.ePut(this.labjackBoard.ljhandle, LJUD.IO.PUT_DIGITAL_BIT, LabjackPrinterInterface.PUMP_ENABLE_OUT, value ? 1 : 0, 0);
             }
         }
 
-        private bool reservoirValve = false;
         public bool ReservoirValve
         {
             get
             {
-                return this.reservoirValve;
+                double value = 0;
+                LJUD.eGet(this.labjackBoard.ljhandle, LJUD.IO.GET_DIGITAL_BIT, LabjackPrinterInterface.VALVE_ENABLE_OUT, ref value, 0);
+                if (value == 1) {
+                    return true;
+                } else {
+                    return false;
+                }
             }
             set
             {
-                this.reservoirValve = true;
-                LJUD.ePut(this.labjackBoard.ljhandle, LJUD.IO.PUT_DIGITAL_BIT, LabjackPrinterInterface.VALVE_ENABLE_OUT, this.reservoirValve ? 1 : 0, 0);
+                LJUD.ePut(this.labjackBoard.ljhandle, LJUD.IO.PUT_DIGITAL_BIT, LabjackPrinterInterface.VALVE_ENABLE_OUT, value ? 1 : 0, 0);
+            }
+        }
+
+        public bool LiftEnabled
+        {
+            get
+            {
+                double value = 0;
+                LJUD.eGet(this.labjackBoard.ljhandle, LJUD.IO.GET_DIGITAL_BIT, LabjackPrinterInterface.LIFT_ENABLE_OUT, ref value, 0);
+                if (value == 1) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+            set
+            {
+                if (value == false) {
+                    this.LiftPositionInPulsesFromTopSensor = -1;
+                }
+                LJUD.ePut(this.labjackBoard.ljhandle, LJUD.IO.PUT_DIGITAL_BIT, LabjackPrinterInterface.LIFT_ENABLE_OUT, value ? 1 : 0, 0);
             }
         }
 
@@ -251,6 +281,13 @@ namespace Controller
         private int PulsesToUM(int pulseCount)
         {
             return (int)(pulseCount / (PULSE_COUNT_PER_MM / 1000d));
+        }
+
+
+        public void Disconnect()
+        {
+            LJUD.ePut(this.labjackBoard.ljhandle, LJUD.IO.PIN_CONFIGURATION_RESET, 0, 0, 0);
+            Connected = false;
         }
     }
 }

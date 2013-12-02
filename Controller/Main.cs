@@ -18,6 +18,7 @@ namespace Controller
     {
         private BeamerOutput beamerForm;
         private PrinterProcess processor;
+        private IPrinterInterface printerInterface;
 
         public Main()
         {
@@ -64,7 +65,7 @@ namespace Controller
                 if (string.IsNullOrWhiteSpace(sliceFolderDlg.SelectedPath)) {
                     MessageBox.Show("Select a folder with images first.");
                 } else {
-                    this.processor = new PrinterProcess(sliceFolderDlg.SelectedPath, this.beamerForm, this);
+                    this.processor = new PrinterProcess(sliceFolderDlg.SelectedPath, this.beamerForm, this, this.printerInterface);
                     this.processor.SetProjectionTime(this.projectionTimeMs);
                     if (this.projectionTimeMsFirstGroup > 0) {
                         this.processor.SetProjectionTimeFirstGroup(this.projectionTimeMsFirstGroup, this.projectionTimeMsFirstGroupCount);
@@ -72,12 +73,14 @@ namespace Controller
                     if (this.projectionTimeMsSecondGroup > 0) {
                         this.processor.SetProjectionTimeSecondGroup(this.projectionTimeMsSecondGroup, this.projectionTimeMsSecondGroupCount);
                     }
-                    btnStart.Text = "Stop";
+                    btnStart.Image = Properties.Resources.glyphicons_175_stop;
                     this.processor.Start();
                     this.startTime = DateTime.Now;
                 }
             } else {
                 this.processor.Stop();
+                btnStart.Enabled = false;
+                btnPause.Enabled = false;
             }
         }
 
@@ -88,7 +91,7 @@ namespace Controller
                 var invoker = new StatusMessageInvoker(StatusMessage);
                 this.Invoke(invoker, message);
             } else {
-                this.txtStatus.AppendText(DateTime.Now.ToString("hh:mm:ss") + message + Environment.NewLine);
+                this.txtStatus.AppendText(DateTime.Now.ToString("hh:mm:ss") + ": " + message + Environment.NewLine);
             }
         }
 
@@ -105,8 +108,10 @@ namespace Controller
                 SetCurrentSlice(0);
                 StatusMessage("Done...");
                 SetThumbnail(null);
-                btnStart.Text = "Start";
-                btnPause.Text = "Pause";
+                btnStart.Enabled = true;
+                btnPause.Enabled = true;
+                btnStart.Image = Properties.Resources.glyphicons_173_play;
+                btnPause.Image = Properties.Resources.glyphicons_174_pause;
             }
         }
 
@@ -205,10 +210,10 @@ namespace Controller
             }
             processor.Pause = !processor.Pause;
             if (processor.Pause) {
-                btnPause.Text = "Continue";
+                btnPause.Image = Properties.Resources.glyphicons_173_play;
             } else {
                 txtTimeRemaining.Text = CalculateRemainingTime();
-                btnPause.Text = "Pause";
+                btnPause.Image = Properties.Resources.glyphicons_174_pause;
             }
         }
 
@@ -278,16 +283,73 @@ namespace Controller
             return timePassed.ToString(@"hh\:mm\:ss");
         }
 
-        private void Main_Load(object sender, EventArgs e)
+        private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
+            new AboutForm().ShowDialog();
         }
 
         private void simulatePrinterToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Process proc = new Process();
-            proc.StartInfo.FileName = "PrinterTcpServerMock.exe";
-            proc.Start();
+            if (this.processor != null) {
+                MessageBox.Show("Printer is active, stop first and allow process to finish before changing simulation mode.", "Cannot switch simulation mode", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            var simulationText = " - Simulating printer";
+            this.simulatePrinterToolStripMenuItem.Checked = !this.simulatePrinterToolStripMenuItem.Checked;
+            if (this.simulatePrinterToolStripMenuItem.Checked) {
+                this.Text += simulationText;
+            } else {
+                this.Text = this.Text.Replace(simulationText, "");
+            }
+        }
+
+        private bool emergencyStopPressed = false;
+        private void btnEmergencyStop_Click(object sender, EventArgs e)
+        {
+            this.emergencyStopPressed = !this.emergencyStopPressed;
+            if (this.emergencyStopPressed) {
+                this.btnEmergencyStop.Image = Properties.Resources.continue_after_emergency;
+                this.btnEmergencyStop.Text = "CONTINUE";
+            } else {
+                this.btnEmergencyStop.Image = Properties.Resources.emergency_stop;
+                this.btnEmergencyStop.Text = "EMERGENCY\nSTOP";
+            }
+        }
+
+        private void btnConnect_Click(object sender, EventArgs e)
+        {
+            if (this.btnConnect.Text == "Connect") {
+                if (this.simulatePrinterToolStripMenuItem.Checked) {
+                    this.printerInterface = new SimulatedPrinterInterface(this);
+                } else {
+                    this.printerInterface = new LabjackPrinterInterface();
+                }
+                string errors;
+                if (!this.printerInterface.TryConnect(out errors)) {
+                    this.StatusMessage("Error connecting: " + errors);
+                    this.printerInterface = null;
+                } else {
+                    this.btnStart.Enabled = true;
+                    this.btnPause.Enabled = true;
+                    btnConnect.Image = Properties.Resources.glyphicons_265_electrical_plug_on;
+                    btnConnect.Text = "Disconnect";
+                }
+            } else {
+                if (this.processor != null) {
+                    if (MessageBox.Show("Are you sure you want to disconnect now?", "Are you sure?", MessageBoxButtons.OKCancel) ==
+                        System.Windows.Forms.DialogResult.Cancel
+                    ) {
+                        return;
+                    }
+                    this.processor.Stop();
+                }
+                this.printerInterface.Disconnect();
+                this.printerInterface = null;
+                this.btnStart.Enabled = false;
+                this.btnPause.Enabled = false;
+                btnConnect.Image = Properties.Resources.glyphicons_265_electrical_plug;
+                btnConnect.Text = "Connect";
+            }
         }
     }
 }
