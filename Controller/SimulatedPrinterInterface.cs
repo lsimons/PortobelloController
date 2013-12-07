@@ -36,6 +36,7 @@ namespace Controller
             BottomSensor = false;
             LiftPositionInPulsesFromTopSensor = -1;
             LiftEnabled = true;
+            FanEnabled = true;
         }
 
         public bool Connected
@@ -61,6 +62,12 @@ namespace Controller
             set;
         }
 
+        public bool FanEnabled
+        {
+            get;
+            set;
+        }
+
         public bool TopSensor
         {
             get;
@@ -77,7 +84,7 @@ namespace Controller
         {
             if (this.LiftPositionInPulsesFromTopSensor >= 0) {
                 var pulseCount = UMToPulses(microMeter);
-                this.LiftPositionInPulsesFromTopSensor += pulseCount;
+                this.LiftPositionInPulsesFromTopSensor -= pulseCount;
                 this.mainForm.StatusMessage("Moving lift up " + microMeter.ToString() + "um");
                 Thread.Sleep((int)(pulseCount / 5));
             }
@@ -92,12 +99,13 @@ namespace Controller
         {
             if (this.LiftPositionInPulsesFromTopSensor >= 0) {
                 var pulseCount = UMToPulses(microMeter);
-                this.LiftPositionInPulsesFromTopSensor -= pulseCount;
+                this.LiftPositionInPulsesFromTopSensor += pulseCount;
                 this.mainForm.StatusMessage("Moving lift down " + microMeter.ToString() + "um");
                 Thread.Sleep((int)(pulseCount / 5));
                 if (this.LiftPositionInPulsesFromTopSensor < 0) {
                     this.LiftPositionInPulsesFromTopSensor = 0;
                 }
+                this.TopSensor = false;
             }
         }
 
@@ -107,6 +115,7 @@ namespace Controller
             this.mainForm.StatusMessage("Moving lift to top.");
             Thread.Sleep(2500);
             this.mainForm.StatusMessage("Moved lift to top.");
+            this.TopSensor = true;
         }
 
         public int LiftPositionInPulsesFromTopSensor

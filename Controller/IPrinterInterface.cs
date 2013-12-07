@@ -41,6 +41,11 @@ namespace Controller
         bool LiftEnabled { get; set; }
 
         /// <summary>
+        /// Set fan output to be enabled or disabled
+        /// </summary>
+        bool FanEnabled { get; set; }
+
+        /// <summary>
         /// Active when lift is at top position
         /// </summary>
         bool TopSensor { get; }

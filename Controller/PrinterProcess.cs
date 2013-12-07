@@ -230,8 +230,10 @@ namespace Controller
 
         private void SignalDone()
         {
-            this.printerInterface.MoveLiftToTop();
-            this.mainForm.StatusMessage("Lift in top position.");
+            if (this.running) {
+                this.printerInterface.MoveLiftToTop();
+                this.mainForm.StatusMessage("Lift in top position.");
+            }
         }
 
         internal bool SetProjectionTime(int projectionTimeMs)

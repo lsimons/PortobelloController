@@ -19,6 +19,7 @@ namespace Controller
         private BeamerOutput beamerForm;
         private PrinterProcess processor;
         private IPrinterInterface printerInterface;
+        private MonitorPrinterStatus monitorPrinter;
 
         public Main()
         {
@@ -74,6 +75,8 @@ namespace Controller
                         this.processor.SetProjectionTimeSecondGroup(this.projectionTimeMsSecondGroup, this.projectionTimeMsSecondGroupCount);
                     }
                     btnStart.Image = Properties.Resources.glyphicons_175_stop;
+                    btnStart.Text = "Stop";
+                    ToolTipHelp.SetToolTip(btnStart, "Stop printing process.");
                     this.processor.Start();
                     this.startTime = DateTime.Now;
                 }
@@ -111,7 +114,10 @@ namespace Controller
                 btnStart.Enabled = true;
                 btnPause.Enabled = true;
                 btnStart.Image = Properties.Resources.glyphicons_173_play;
+                btnStart.Text = "Start";
+                ToolTipHelp.SetToolTip(btnStart, "Start printing process.");
                 btnPause.Image = Properties.Resources.glyphicons_174_pause;
+                btnPause.Text = "Pause";
             }
         }
 
@@ -211,9 +217,13 @@ namespace Controller
             processor.Pause = !processor.Pause;
             if (processor.Pause) {
                 btnPause.Image = Properties.Resources.glyphicons_173_play;
+                btnPause.Text = "Continue";
+                ToolTipHelp.SetToolTip(btnPause, "Continue the printing process.");
             } else {
                 txtTimeRemaining.Text = CalculateRemainingTime();
                 btnPause.Image = Properties.Resources.glyphicons_174_pause;
+                btnPause.Text = "Pause";
+                ToolTipHelp.SetToolTip(btnPause, "Pause the printing process.");
             }
         }
 
@@ -248,7 +258,7 @@ namespace Controller
                 this.Invoke(invoker, total);
             } else {
                 this.totalSlices = total;
-                txtTotalSlices.Text = total.ToString("000000");
+                txtTotalSlices.Text = total.ToString("##0000");
                 txtTimeRemaining.Text = CalculateRemainingTime();
                 txtTimePassed.Text = CalculateTimePassed();
             }
@@ -271,7 +281,7 @@ namespace Controller
                 this.Invoke(invoker, current);
             } else {
                 this.currentSlice = current;
-                txtCurrentSlice.Text = current.ToString("000000");
+                txtCurrentSlice.Text = current.ToString("##0000");
                 txtTimeRemaining.Text = CalculateRemainingTime();
                 txtTimePassed.Text = CalculateTimePassed();
             }
@@ -310,9 +320,15 @@ namespace Controller
             if (this.emergencyStopPressed) {
                 this.btnEmergencyStop.Image = Properties.Resources.continue_after_emergency;
                 this.btnEmergencyStop.Text = "CONTINUE";
+                if (this.printerInterface != null) {
+                    this.printerInterface.LiftEnabled = false;
+                }
             } else {
                 this.btnEmergencyStop.Image = Properties.Resources.emergency_stop;
                 this.btnEmergencyStop.Text = "EMERGENCY\nSTOP";
+                if (this.printerInterface != null) {
+                    this.printerInterface.LiftEnabled = true;
+                }
             }
         }
 
@@ -333,6 +349,7 @@ namespace Controller
                     this.btnPause.Enabled = true;
                     btnConnect.Image = Properties.Resources.glyphicons_265_electrical_plug_on;
                     btnConnect.Text = "Disconnect";
+                    this.monitorPrinter = new MonitorPrinterStatus(this.printerInterface, this);
                 }
             } else {
                 if (this.processor != null) {
@@ -343,6 +360,7 @@ namespace Controller
                     }
                     this.processor.Stop();
                 }
+                this.monitorPrinter.Close();
                 this.printerInterface.Disconnect();
                 this.printerInterface = null;
                 this.btnStart.Enabled = false;
@@ -350,6 +368,150 @@ namespace Controller
                 btnConnect.Image = Properties.Resources.glyphicons_265_electrical_plug;
                 btnConnect.Text = "Connect";
             }
+        }
+
+        private delegate void SetBottomStateInvoker(bool state);
+        internal void SetBottomSensor(bool state)
+        {
+            if (this.InvokeRequired) {
+                var handle = new SetBottomStateInvoker(SetBottomSensor);
+                this.Invoke(handle, state);
+            } else {
+                if (state) {
+                    this.ledBottomSensor.Image = Properties.Resources.led_blue;
+                } else {
+                    this.ledBottomSensor.Image = Properties.Resources.led_off;
+                }
+            }
+        }
+
+        internal void SetTopSensor(bool state)
+        {
+            if (this.InvokeRequired) {
+                var handle = new SetBottomStateInvoker(SetTopSensor);
+                this.Invoke(handle, state);
+            } else {
+                if (state) {
+                    this.ledTopSensor.Image = Properties.Resources.led_blue;
+                } else {
+                    this.ledTopSensor.Image = Properties.Resources.led_off;
+                }
+            }
+        }
+
+        internal void SetResinPump(bool state)
+        {
+            if (this.InvokeRequired) {
+                var handle = new SetBottomStateInvoker(SetResinPump);
+                this.Invoke(handle, state);
+            } else {
+                if (state) {
+                    this.ledInkPump.Image = Properties.Resources.led_blue;
+                } else {
+                    this.ledInkPump.Image = Properties.Resources.led_off;
+                }
+            }
+        }
+
+        internal void SetReservoirValve(bool state)
+        {
+            if (this.InvokeRequired) {
+                var handle = new SetBottomStateInvoker(SetReservoirValve);
+                this.Invoke(handle, state);
+            } else {
+                if (state) {
+                    this.ledEmptyVat.Image = Properties.Resources.led_blue;
+                } else {
+                    this.ledEmptyVat.Image = Properties.Resources.led_off;
+                }
+            }
+        }
+
+        private delegate void SetLiftPositionInvoker(int position);
+        internal void SetLiftPosition(int position)
+        {
+            if (this.InvokeRequired) {
+                var invoker = new SetLiftPositionInvoker(SetLiftPosition);
+                this.Invoke(invoker, position);
+            } else {
+                this.lblPositionFromTopMm.Text = position.ToString();
+            }
+        }
+
+        private void btnMoveToTop_Click(object sender, EventArgs e)
+        {
+            if (this.printerInterface != null && this.processor == null) {
+            }
+        }
+
+        private void btnInitialize_Click(object sender, EventArgs e)
+        {
+            if (this.printerInterface != null && this.processor == null) {
+            }
+        }
+
+        private void btnInkPump_Click(object sender, EventArgs e)
+        {
+            if (this.printerInterface != null && this.processor == null) {
+            }
+        }
+
+        private bool drainReservoirActive = false;
+        private void btnDrainReservoir_Click(object sender, EventArgs e)
+        {
+            if (this.printerInterface != null && this.processor == null) {
+                this.drainReservoirActive = !this.drainReservoirActive;
+                if (drainReservoirActive) {
+                    this.printerInterface.ReservoirValve = true;
+                    this.btnDrainReservoir.Image = Properties.Resources.drain_on;
+                } else {
+                    this.printerInterface.ReservoirValve = false;
+                    this.btnDrainReservoir.Image = Properties.Resources.drain;
+                }
+            } else {
+                if (this.printerInterface != null) {
+                    this.printerInterface.ReservoirValve = false;
+                }
+                this.btnDrainReservoir.Image = Properties.Resources.drain;
+            }
+        }
+
+        private void btnLiftUp_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left) {
+
+            }
+        }
+
+        private void btnLiftUp_MouseUp(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left) {
+
+            }
+        }
+
+        private void btnLiftUp_MouseLeave(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btnLiftDown_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left) {
+
+            }
+        }
+
+        private void btnLiftDown_MouseUp(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left) {
+
+            }
+        }
+
+        private void btnLiftDown_MouseLeave(object sender, EventArgs e)
+        {
+
         }
     }
 }

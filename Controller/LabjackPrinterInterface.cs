@@ -21,6 +21,8 @@ namespace Controller
         private const int BOTTOM_SENSOR_IN = 9;
         // Emergency stop in (external): CIO0
         private const int EMERGENCY_STOP_IN = 16;
+        // Ventilator out: EIO2
+        private const int FAN_ENABLE_OUT = 10;
         // Motor direction out: EIO3
         private const int LIFT_DIR_OUT = 11;
         // Motor enable out: EIO4
@@ -32,7 +34,7 @@ namespace Controller
         // Maximum height to move
         private const int MAX_PULSE_COUNT_FROM_TOP = 10000;
         // Stepper pulses per mm
-        private const int PULSE_COUNT_PER_MM = 600;
+        private const int PULSE_COUNT_PER_MM = 640;
 
         private U3 labjackBoard;
 
@@ -57,12 +59,16 @@ namespace Controller
             //timer/counter on FIO4.
             LJUD.AddRequest(this.labjackBoard.ljhandle, LJUD.IO.PUT_CONFIG, LJUD.CHANNEL.TIMER_COUNTER_PIN_OFFSET, LabjackPrinterInterface.PWM_OFFSET, 0, 0);
 
-            //Use the 48 MHz timer clock base with divider.  Since we are using clock with divisor
-            //support, Counter0 is not available.
+            //Use the 48 MHz timer clock base with devisor, clock_0 disabled.
             LJUD.AddRequest(this.labjackBoard.ljhandle, LJUD.IO.PUT_CONFIG, LJUD.CHANNEL.TIMER_CLOCK_BASE, (double)LJUD.TIMERCLOCKS.MHZ48_DIV, 0, 0);
 
-            //Set the divisor to 75 so the actual timer clock is 0.64 MHz. (Needed to use PWM at 2.5kHz)
-            LJUD.AddRequest(this.labjackBoard.ljhandle, LJUD.IO.PUT_CONFIG, LJUD.CHANNEL.TIMER_CLOCK_DIVISOR, 75, 0, 0);
+            LJUD.AddRequest(this.labjackBoard.ljhandle, LJUD.IO.PUT_CONFIG, LJUD.CHANNEL.TIMER_CLOCK_DIVISOR, 200, 0, 0);
+
+            //Make sure Counter0 is disabled.
+            LJUD.AddRequest(this.labjackBoard.ljhandle, LJUD.IO.PUT_COUNTER_ENABLE, 0, 0, 0, 0);
+
+            //Enable Counter1.  It will use the next available line, FIO6.
+            LJUD.AddRequest(this.labjackBoard.ljhandle, LJUD.IO.PUT_COUNTER_ENABLE, 1, 1, 0, 0);
 
             //Execute the requests.
             LJUD.GoOne(this.labjackBoard.ljhandle);
@@ -71,6 +77,7 @@ namespace Controller
             ResinPump = false;
             ReservoirValve = false;
             LiftEnabled = true;
+            FanEnabled = true;
         }
 
         public bool Connected { get; private set; }
@@ -132,6 +139,24 @@ namespace Controller
             }
         }
 
+        public bool FanEnabled
+        {
+            get
+            {
+                double value = 0;
+                LJUD.eGet(this.labjackBoard.ljhandle, LJUD.IO.GET_DIGITAL_BIT, LabjackPrinterInterface.FAN_ENABLE_OUT, ref value, 0);
+                if (value == 1) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+            set
+            {
+                LJUD.ePut(this.labjackBoard.ljhandle, LJUD.IO.PUT_DIGITAL_BIT, LabjackPrinterInterface.FAN_ENABLE_OUT, value ? 1 : 0, 0);
+            }
+        }
+
         public bool TopSensor
         {
             get
@@ -174,17 +199,18 @@ namespace Controller
             //Enable 2 timers.  They will use FIO4-FIO5.
             LJUD.AddRequest(this.labjackBoard.ljhandle, LJUD.IO.PUT_CONFIG, LJUD.CHANNEL.NUMBER_TIMERS_ENABLED, 2, 0, 0);
 
-            //Configure Timer0 as 8-bit PWM.  Frequency will be 0.64M/2^8 ~ 2.5 kHz.
-            LJUD.AddRequest(this.labjackBoard.ljhandle, LJUD.IO.PUT_TIMER_MODE, 0, (double)LJUD.TIMERMODE.PWM8, 0, 0);
+            // Frequency out
+            LJUD.AddRequest(this.labjackBoard.ljhandle, LJUD.IO.PUT_TIMER_MODE, 0, (double)LJUD.TIMERMODE.FREQOUT, 0, 0);
 
-            //Set the PWM duty cycle to 50%.
-            LJUD.AddRequest(this.labjackBoard.ljhandle, LJUD.IO.PUT_TIMER_VALUE, 0, 32768, 0, 0);
+            // Create 2.5 Khz
+            LJUD.AddRequest(this.labjackBoard.ljhandle, LJUD.IO.PUT_TIMER_VALUE, 0, 48, 0, 0);
 
             // Timer1 is used to stop timer0 after specified interval count.
             LJUD.AddRequest(this.labjackBoard.ljhandle, LJUD.IO.PUT_TIMER_MODE, 1, (double)LJUD.TIMERMODE.TIMERSTOP, 0, 0);
             
-            //Set the PWM duty cycle to 50%.
             LJUD.AddRequest(this.labjackBoard.ljhandle, LJUD.IO.PUT_TIMER_VALUE, 1, pulseCount, 0, 0);
+
+            LJUD.AddRequest(this.labjackBoard.ljhandle, LJUD.IO.PUT_COUNTER_RESET, 1, 0, 0, 0); 
 
             // Move in the right direction
             LJUD.AddRequest(this.labjackBoard.ljhandle, LJUD.IO.PUT_DIGITAL_BIT, LabjackPrinterInterface.LIFT_DIR_OUT, (moveUp ? 1 : 0), 0, 0);
@@ -195,10 +221,10 @@ namespace Controller
             // Value is unsigned 32 bit int
             // The MSW of the read from this timer mode returns the number of edges counted, but does not increment
             // past the stop count value.  The LSW of the read returns edges waiting for.
-            double timer1Val = 0;
+            double counterVal = 0;
             do {
-                LJUD.eGet(this.labjackBoard.ljhandle, LJUD.IO.GET_TIMER, 1, ref timer1Val, 0);
-            } while ((((UInt32)timer1Val) & 0xFFFFu) != 0);
+                LJUD.eGet(this.labjackBoard.ljhandle, LJUD.IO.GET_COUNTER, 1, ref counterVal, 0);
+            } while ((UInt32)counterVal < (pulseCount - 5));
         }
 
         public void MoveLiftUp(int microMeter)

@@ -163,6 +163,16 @@ namespace Controller.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap glyphicons_213_top_arrow {
+            get {
+                object obj = ResourceManager.GetObject("glyphicons_213_top_arrow", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap glyphicons_213_up_arrow {
             get {
                 object obj = ResourceManager.GetObject("glyphicons_213_up_arrow", resourceCulture);
@@ -186,6 +196,16 @@ namespace Controller.Properties {
         internal static System.Drawing.Bitmap glyphicons_265_electrical_plug_on {
             get {
                 object obj = ResourceManager.GetObject("glyphicons_265_electrical_plug_on", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap glyphicons_403_sorting {
+            get {
+                object obj = ResourceManager.GetObject("glyphicons_403_sorting", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

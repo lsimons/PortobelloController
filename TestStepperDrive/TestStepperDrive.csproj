@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{2C9C1151-1DD4-4C3C-8C1D-999A98311975}</ProjectGuid>
+    <ProjectGuid>{413525D0-24B1-4BCC-B34A-74406F58F6E3}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Controller</RootNamespace>
-    <AssemblyName>PortobelloController</AssemblyName>
+    <RootNamespace>TestStepperDrive</RootNamespace>
+    <AssemblyName>TestStepperDrive</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -32,11 +32,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="LJUDDotNet, Version=3.39.0.0, Culture=neutral, PublicKeyToken=9d6c109908595016, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>.\LJUDDotNet.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -49,39 +44,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AboutForm.cs">
+    <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="AboutForm.Designer.cs">
-      <DependentUpon>AboutForm.cs</DependentUpon>
+    <Compile Include="Form1.Designer.cs">
+      <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
-    <Compile Include="BeamerOutput.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="BeamerOutput.Designer.cs">
-      <DependentUpon>BeamerOutput.cs</DependentUpon>
-    </Compile>
-    <Compile Include="IPrinterInterface.cs" />
-    <Compile Include="Main.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Main.Designer.cs">
-      <DependentUpon>Main.cs</DependentUpon>
-    </Compile>
-    <Compile Include="LabjackPrinterInterface.cs" />
-    <Compile Include="MonitorPrinterStatus.cs" />
-    <Compile Include="PrinterProcess.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SimulatedPrinterInterface.cs" />
-    <EmbeddedResource Include="AboutForm.resx">
-      <DependentUpon>AboutForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="BeamerOutput.resx">
-      <DependentUpon>BeamerOutput.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Main.resx">
-      <DependentUpon>Main.cs</DependentUpon>
+    <EmbeddedResource Include="Form1.resx">
+      <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -91,7 +63,6 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
-      <DesignTime>True</DesignTime>
     </Compile>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -107,30 +78,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="favicon.ico" />
-    <Content Include="icons\continue_after_emergency.png" />
-    <Content Include="icons\emergency_stop.png" />
-    <Content Include="icons\glyphicons_092_tint.png" />
-    <Content Include="icons\glyphicons_092_tint_on.png" />
-    <Content Include="icons\glyphicons_173_play.png" />
-    <Content Include="icons\glyphicons_174_pause.png" />
-    <Content Include="icons\glyphicons_175_stop.png" />
-    <Content Include="icons\glyphicons_181_download_alt.png" />
-    <Content Include="icons\glyphicons_181_download_alt_on.png" />
-    <Content Include="icons\glyphicons_212_down_arrow.png" />
-    <Content Include="icons\glyphicons_213_top_arrow.png" />
-    <Content Include="icons\glyphicons_213_up_arrow.png" />
-    <Content Include="icons\glyphicons_265_electrical_plug.png" />
-    <Content Include="icons\glyphicons_265_electrical_plug_on.png" />
-    <Content Include="icons\glyphicons_403_sorting.png" />
-    <Content Include="icons\led_blue.png" />
-    <Content Include="icons\led_green.png" />
-    <Content Include="icons\led_off.png" />
-    <Content Include="icons\led_red.png" />
-    <Content Include="icons\led_yellow.png" />
-    <Content Include="LJUDDotNet.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+    <ProjectReference Include="..\Controller\Controller.csproj">
+      <Project>{2c9c1151-1dd4-4c3c-8c1d-999a98311975}</Project>
+      <Name>Controller</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
