@@ -264,15 +264,22 @@ namespace Controller
         public void MoveLiftToTop()
         {
             while (!TopSensor) {
-                MovePulses(500, true);
+                MovePulses(1000, true);
             }
             while (TopSensor) {
-                MovePulses(60, false);
+                MovePulses(200, false);
             }
             while (!TopSensor) {
                 MovePulses(30, true);
             }
             LiftPositionInPulsesFromTopSensor = 0;
+        }
+
+        public void InitializePrinter()
+        {
+            this.MoveLiftToTop();
+            this.MoveLiftDown(7000);
+            this.MoveLiftUp(500);
         }
 
         private int liftPositionInPulsesFromTopSensor = -1;

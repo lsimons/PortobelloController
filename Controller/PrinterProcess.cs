@@ -65,12 +65,12 @@ namespace Controller
                 } catch (Exception err) {
                     this.mainForm.StatusMessage("Unknown error." + Environment.NewLine + err.ToString());
                     this.running = false;
-                    this.mainForm.Done();
+                    this.mainForm.ProcessorDone();
                 }
             } else {
                 this.mainForm.StatusMessage("Failed to connect to server: " + error);
                 this.running = false;
-                this.mainForm.Done();
+                this.mainForm.ProcessorDone();
             }
         }
 
@@ -87,11 +87,11 @@ namespace Controller
                 ProjectAllImages();
                 SignalDone();
                 this.running = false;
-                this.mainForm.Done();
+                this.mainForm.ProcessorDone();
             } catch (Exception err) {
                 this.mainForm.StatusMessage("Unknown error." + Environment.NewLine + err.ToString());
                 this.running = false;
-                this.mainForm.Done();
+                this.mainForm.ProcessorDone();
             }
         }
 
@@ -110,9 +110,7 @@ namespace Controller
         {
             try {
                 this.printerInterface.ResinPump = true;
-                this.printerInterface.MoveLiftToTop();
-                this.printerInterface.MoveLiftDown(7000);
-                this.printerInterface.MoveLiftUp(500);
+                this.printerInterface.InitializePrinter();
                 Thread.Sleep(1000);
             } finally {
                 this.printerInterface.ResinPump = false;
@@ -168,7 +166,7 @@ namespace Controller
                 this.printerInterface.MoveLiftDown(30);
             } else {
                 this.printerInterface.MoveLiftDown(5000);
-                this.printerInterface.MoveLiftUp(4930);
+                this.printerInterface.MoveLiftUp(4940);
             }
             Thread.Sleep(200);
         }

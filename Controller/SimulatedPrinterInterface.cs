@@ -82,7 +82,7 @@ namespace Controller
 
         public void MoveLiftUp(int microMeter)
         {
-            if (this.LiftPositionInPulsesFromTopSensor >= 0) {
+            if (!TopSensor && this.LiftPositionInPulsesFromTopSensor > -1) {
                 var pulseCount = UMToPulses(microMeter);
                 this.LiftPositionInPulsesFromTopSensor -= pulseCount;
                 this.mainForm.StatusMessage("Moving lift up " + microMeter.ToString() + "um");
@@ -97,7 +97,7 @@ namespace Controller
 
         public void MoveLiftDown(int microMeter)
         {
-            if (this.LiftPositionInPulsesFromTopSensor >= 0) {
+            if (!BottomSensor) {
                 var pulseCount = UMToPulses(microMeter);
                 this.LiftPositionInPulsesFromTopSensor += pulseCount;
                 this.mainForm.StatusMessage("Moving lift down " + microMeter.ToString() + "um");
@@ -116,6 +116,11 @@ namespace Controller
             Thread.Sleep(2500);
             this.mainForm.StatusMessage("Moved lift to top.");
             this.TopSensor = true;
+        }
+
+        public void InitializePrinter()
+        {
+            this.mainForm.StatusMessage("Initialize lift");
         }
 
         public int LiftPositionInPulsesFromTopSensor

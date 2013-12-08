@@ -73,6 +73,11 @@ namespace Controller
         void MoveLiftToTop();
 
         /// <summary>
+        /// Move printer to begin position
+        /// </summary>
+        void InitializePrinter();
+
+        /// <summary>
         /// Current position in pulses from top sensor if known, -1 if unknown. Move to top if unknown to set to 0.
         /// </summary>
         int LiftPositionInPulsesFromTopSensor { get; }

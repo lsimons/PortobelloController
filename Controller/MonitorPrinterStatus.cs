@@ -17,6 +17,7 @@ namespace Controller
         private bool resinPump;
         private bool reservoirValve;
         private int lastPosition;
+        private bool running = false;
 
         public MonitorPrinterStatus(IPrinterInterface printerInterface, Main mainForm)
         {
@@ -30,7 +31,9 @@ namespace Controller
         private void Run()
         {
             this.mainForm.StatusMessage("Start monitoring printer");
-            while (true) {
+            this.running = true;
+            while (this.running) {
+                Thread.Sleep(100);
                 if (this.bottomSensor != this.printerInterface.BottomSensor) {
                     this.bottomSensor = !this.bottomSensor;
                     this.mainForm.SetBottomSensor(this.bottomSensor);
@@ -48,13 +51,19 @@ namespace Controller
                     this.mainForm.SetReservoirValve(this.reservoirValve);
                 }
                 if (this.printerInterface.LiftPositionInUMFromTopSensor != -1) {
-                    if (this.lastPosition != this.printerInterface.LiftPositionInUMFromTopSensor) {
-                        this.lastPosition = this.printerInterface.LiftPositionInUMFromTopSensor / 1000;
+                    var curPos = this.printerInterface.LiftPositionInUMFromTopSensor / 1000;
+                    if (this.lastPosition != curPos) {
+                        this.lastPosition = curPos;
                         this.mainForm.SetLiftPosition(this.lastPosition);
                     }
                 }
-                Thread.Sleep(100);
             }
+            this.mainForm.MonitoringDone();
+        }
+
+        internal void Stop()
+        {
+            this.running = false;
         }
 
         internal void Close()

@@ -98,11 +98,11 @@ namespace Controller
             }
         }
 
-        private delegate void DoneInvoker();
-        public void Done()
+        private delegate void ProcessorDoneInvoker();
+        public void ProcessorDone()
         {
             if (this.InvokeRequired) {
-                var invoker = new DoneInvoker(Done);
+                var invoker = new ProcessorDoneInvoker(ProcessorDone);
                 this.Invoke(invoker);
             } else {
                 processor = null;
@@ -118,6 +118,19 @@ namespace Controller
                 ToolTipHelp.SetToolTip(btnStart, "Start printing process.");
                 btnPause.Image = Properties.Resources.glyphicons_174_pause;
                 btnPause.Text = "Pause";
+                this.Close();
+            }
+        }
+
+        private delegate void MonitoringDoneInvoker();
+        public void MonitoringDone()
+        {
+            if (this.InvokeRequired) {
+                var invoker = new MonitoringDoneInvoker(MonitoringDone);
+                this.Invoke(invoker);
+            } else {
+                this.monitorPrinter = null;
+                this.Close();
             }
         }
 
@@ -229,12 +242,12 @@ namespace Controller
 
         private void Main_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (processor != null) {
-                processor.Stop();
-                int waitCount = 0;
-                while (processor != null && waitCount++ < 40) {
-                    Thread.Sleep(100);
-                }
+            if (this.monitorPrinter != null) {
+                this.monitorPrinter.Stop();
+                e.Cancel = true;
+            } else if (this.processor != null) {
+                this.processor.Stop();
+                e.Cancel = true;
             }
         }
 
@@ -438,21 +451,41 @@ namespace Controller
             }
         }
 
-        private void btnMoveToTop_Click(object sender, EventArgs e)
+        private async void btnMoveToTop_Click(object sender, EventArgs e)
         {
             if (this.printerInterface != null && this.processor == null) {
+                this.btnMoveToTop.Enabled = false;
+                await Task.Run(new Action(this.printerInterface.MoveLiftToTop));
+                this.btnMoveToTop.Enabled = true;
             }
         }
 
-        private void btnInitialize_Click(object sender, EventArgs e)
+        private async void btnInitialize_Click(object sender, EventArgs e)
         {
             if (this.printerInterface != null && this.processor == null) {
+                this.btnInitialize.Enabled = false;
+                await Task.Run(new Action(this.printerInterface.InitializePrinter));
+                this.btnInitialize.Enabled = true;
             }
         }
 
+        private bool resinPump = false;
         private void btnInkPump_Click(object sender, EventArgs e)
         {
             if (this.printerInterface != null && this.processor == null) {
+                this.resinPump = !this.resinPump;
+                if (this.resinPump) {
+                    this.printerInterface.ResinPump = true;
+                    this.btnInkPump.Image = Properties.Resources.fill_on;
+                } else {
+                    this.printerInterface.ResinPump = false;
+                    this.btnInkPump.Image = Properties.Resources.fill;
+                }
+            } else {
+                if (this.printerInterface != null) {
+                    this.printerInterface.ResinPump = false;
+                }
+                this.btnInkPump.Image = Properties.Resources.fill;
             }
         }
 
@@ -479,39 +512,81 @@ namespace Controller
         private void btnLiftUp_MouseDown(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Left) {
-
+                this.StatusMessage("Begin manual lift moving up.");
+                BeginMoveUp();
             }
+        }
+
+        private bool liftMovingUp = false;
+        private void BeginMoveUp()
+        {
+            this.liftMovingUp = true;
+            new Thread(() => {
+                while (this.liftMovingUp && this.printerInterface != null && this.processor == null) {
+                    this.printerInterface.MoveLiftUp(100);
+                    Thread.Sleep(0);
+                }
+            }).Start();
         }
 
         private void btnLiftUp_MouseUp(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Left) {
+                EndMoveUp();
+            }
+        }
 
+        private void EndMoveUp()
+        {
+            if (this.liftMovingUp) {
+                this.StatusMessage("End manual lift moving up.");
+                this.liftMovingUp = false;
             }
         }
 
         private void btnLiftUp_MouseLeave(object sender, EventArgs e)
         {
-
+            EndMoveUp();
         }
 
         private void btnLiftDown_MouseDown(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Left) {
-
+                this.StatusMessage("Begin manual lift moving down.");
+                BeginMoveDown();
             }
+        }
+
+        private bool liftMovingDown = false;
+        private void BeginMoveDown()
+        {
+            this.liftMovingDown = true;
+            new Thread(() => {
+                while (this.liftMovingDown && this.printerInterface != null && this.processor == null) {
+                    this.printerInterface.MoveLiftDown(100);
+                    Thread.Sleep(0);
+                }
+            }).Start();
         }
 
         private void btnLiftDown_MouseUp(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Left) {
+                EndMoveDown();
+            }
+        }
 
+        private void EndMoveDown()
+        {
+            if (this.liftMovingDown) {
+                this.StatusMessage("End manual lift moving down.");
+                this.liftMovingDown = false;
             }
         }
 
         private void btnLiftDown_MouseLeave(object sender, EventArgs e)
         {
-
+            EndMoveDown();
         }
     }
 }
