@@ -67,42 +67,42 @@
             this.label13 = new System.Windows.Forms.Label();
             this.txtTimePassed = new System.Windows.Forms.Label();
             this.label15 = new System.Windows.Forms.Label();
-            this.panel1 = new System.Windows.Forms.Panel();
-            this.btnConnect = new System.Windows.Forms.Button();
-            this.btnStart = new System.Windows.Forms.Button();
-            this.btnPause = new System.Windows.Forms.Button();
-            this.pbLayerThumbnail = new System.Windows.Forms.PictureBox();
+            this.pnlMain = new System.Windows.Forms.Panel();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.label20 = new System.Windows.Forms.Label();
+            this.label18 = new System.Windows.Forms.Label();
+            this.label19 = new System.Windows.Forms.Label();
+            this.label14 = new System.Windows.Forms.Label();
+            this.label12 = new System.Windows.Forms.Label();
+            this.label17 = new System.Windows.Forms.Label();
+            this.label16 = new System.Windows.Forms.Label();
+            this.lblPositionFromTopMm = new System.Windows.Forms.Label();
+            this.ToolTipHelp = new System.Windows.Forms.ToolTip(this.components);
+            this.timerButtonLiftUp = new System.Windows.Forms.Timer(this.components);
+            this.timerButtonLiftDown = new System.Windows.Forms.Timer(this.components);
             this.btnInitialize = new System.Windows.Forms.Button();
             this.btnMoveToTop = new System.Windows.Forms.Button();
-            this.label20 = new System.Windows.Forms.Label();
             this.btnEmergencyStop = new System.Windows.Forms.Button();
             this.btnDrainReservoir = new System.Windows.Forms.Button();
             this.btnInkPump = new System.Windows.Forms.Button();
             this.btnLiftDown = new System.Windows.Forms.Button();
             this.btnLiftUp = new System.Windows.Forms.Button();
-            this.label18 = new System.Windows.Forms.Label();
             this.ledEmptyVat = new System.Windows.Forms.PictureBox();
-            this.label19 = new System.Windows.Forms.Label();
             this.ledInkPump = new System.Windows.Forms.PictureBox();
-            this.label14 = new System.Windows.Forms.Label();
             this.ledBottomSensor = new System.Windows.Forms.PictureBox();
-            this.label12 = new System.Windows.Forms.Label();
-            this.label17 = new System.Windows.Forms.Label();
-            this.label16 = new System.Windows.Forms.Label();
-            this.lblPositionFromTopMm = new System.Windows.Forms.Label();
             this.ledTopSensor = new System.Windows.Forms.PictureBox();
-            this.ToolTipHelp = new System.Windows.Forms.ToolTip(this.components);
-            this.timerButtonLiftUp = new System.Windows.Forms.Timer(this.components);
-            this.timerButtonLiftDown = new System.Windows.Forms.Timer(this.components);
+            this.btnConnect = new System.Windows.Forms.Button();
+            this.btnStart = new System.Windows.Forms.Button();
+            this.btnPause = new System.Windows.Forms.Button();
+            this.pbLayerThumbnail = new System.Windows.Forms.PictureBox();
             this.menuStrip1.SuspendLayout();
-            this.panel1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pbLayerThumbnail)).BeginInit();
+            this.pnlMain.SuspendLayout();
             this.panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ledEmptyVat)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ledInkPump)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ledBottomSensor)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ledTopSensor)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pbLayerThumbnail)).BeginInit();
             this.SuspendLayout();
             // 
             // sliceFolderDlg
@@ -387,6 +387,7 @@
             this.hardwareConfigurationToolStripMenuItem.Name = "hardwareConfigurationToolStripMenuItem";
             this.hardwareConfigurationToolStripMenuItem.Size = new System.Drawing.Size(200, 22);
             this.hardwareConfigurationToolStripMenuItem.Text = "Hardware configuration";
+            this.hardwareConfigurationToolStripMenuItem.Click += new System.EventHandler(this.hardwareConfigurationToolStripMenuItem_Click);
             // 
             // simulatePrinterToolStripMenuItem
             // 
@@ -450,102 +451,42 @@
             this.label15.TabIndex = 16;
             this.label15.Text = "Total time";
             // 
-            // panel1
+            // pnlMain
             // 
-            this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.panel1.Controls.Add(this.btnConnect);
-            this.panel1.Controls.Add(this.txtSecondGroupCount);
-            this.panel1.Controls.Add(this.txtTimeRemaining);
-            this.panel1.Controls.Add(this.label7);
-            this.panel1.Controls.Add(this.label10);
-            this.panel1.Controls.Add(this.label11);
-            this.panel1.Controls.Add(this.btnSliceFolder);
-            this.panel1.Controls.Add(this.txtFirstGroupCount);
-            this.panel1.Controls.Add(this.txtProjectionTimeMs);
-            this.panel1.Controls.Add(this.txtProjectionTimeMsSecondGroup);
-            this.panel1.Controls.Add(this.label9);
-            this.panel1.Controls.Add(this.txtProjectionTimeMsFirstGroup);
-            this.panel1.Controls.Add(this.label13);
-            this.panel1.Controls.Add(this.label8);
-            this.panel1.Controls.Add(this.txtFolder);
-            this.panel1.Controls.Add(this.txtTimePassed);
-            this.panel1.Controls.Add(this.label1);
-            this.panel1.Controls.Add(this.label15);
-            this.panel1.Controls.Add(this.label4);
-            this.panel1.Controls.Add(this.label6);
-            this.panel1.Controls.Add(this.label2);
-            this.panel1.Controls.Add(this.btnStart);
-            this.panel1.Controls.Add(this.btnPause);
-            this.panel1.Controls.Add(this.progressBar);
-            this.panel1.Controls.Add(this.txtStatus);
-            this.panel1.Controls.Add(this.pbLayerThumbnail);
-            this.panel1.Controls.Add(this.txtTotalSlices);
-            this.panel1.Controls.Add(this.label3);
-            this.panel1.Controls.Add(this.txtCurrentSlice);
-            this.panel1.Controls.Add(this.label5);
-            this.panel1.Location = new System.Drawing.Point(0, 25);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(605, 436);
-            this.panel1.TabIndex = 29;
-            // 
-            // btnConnect
-            // 
-            this.btnConnect.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnConnect.Image = global::Controller.Properties.Resources.glyphicons_265_electrical_plug;
-            this.btnConnect.Location = new System.Drawing.Point(343, 34);
-            this.btnConnect.Name = "btnConnect";
-            this.btnConnect.Padding = new System.Windows.Forms.Padding(0, 0, 0, 5);
-            this.btnConnect.Size = new System.Drawing.Size(80, 69);
-            this.btnConnect.TabIndex = 29;
-            this.btnConnect.Text = "Connect";
-            this.btnConnect.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
-            this.ToolTipHelp.SetToolTip(this.btnConnect, "Connect to the selected printer interface.");
-            this.btnConnect.UseVisualStyleBackColor = true;
-            this.btnConnect.Click += new System.EventHandler(this.btnConnect_Click);
-            // 
-            // btnStart
-            // 
-            this.btnStart.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnStart.Enabled = false;
-            this.btnStart.Image = global::Controller.Properties.Resources.glyphicons_173_play;
-            this.btnStart.Location = new System.Drawing.Point(515, 34);
-            this.btnStart.Name = "btnStart";
-            this.btnStart.Padding = new System.Windows.Forms.Padding(0, 0, 0, 5);
-            this.btnStart.Size = new System.Drawing.Size(80, 69);
-            this.btnStart.TabIndex = 8;
-            this.btnStart.Text = "Start";
-            this.btnStart.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
-            this.ToolTipHelp.SetToolTip(this.btnStart, "Start printing process.");
-            this.btnStart.UseVisualStyleBackColor = true;
-            this.btnStart.Click += new System.EventHandler(this.btnStart_Click);
-            // 
-            // btnPause
-            // 
-            this.btnPause.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnPause.Enabled = false;
-            this.btnPause.Image = global::Controller.Properties.Resources.glyphicons_174_pause;
-            this.btnPause.Location = new System.Drawing.Point(429, 34);
-            this.btnPause.Name = "btnPause";
-            this.btnPause.Padding = new System.Windows.Forms.Padding(0, 0, 0, 5);
-            this.btnPause.Size = new System.Drawing.Size(80, 69);
-            this.btnPause.TabIndex = 7;
-            this.btnPause.Text = "Pause";
-            this.btnPause.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
-            this.ToolTipHelp.SetToolTip(this.btnPause, "Pause the printing process.");
-            this.btnPause.UseVisualStyleBackColor = true;
-            this.btnPause.Click += new System.EventHandler(this.btnPause_Click);
-            // 
-            // pbLayerThumbnail
-            // 
-            this.pbLayerThumbnail.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.pbLayerThumbnail.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.pbLayerThumbnail.Location = new System.Drawing.Point(388, 208);
-            this.pbLayerThumbnail.Name = "pbLayerThumbnail";
-            this.pbLayerThumbnail.Size = new System.Drawing.Size(205, 144);
-            this.pbLayerThumbnail.TabIndex = 0;
-            this.pbLayerThumbnail.TabStop = false;
+            this.pnlMain.Controls.Add(this.btnConnect);
+            this.pnlMain.Controls.Add(this.txtSecondGroupCount);
+            this.pnlMain.Controls.Add(this.txtTimeRemaining);
+            this.pnlMain.Controls.Add(this.label7);
+            this.pnlMain.Controls.Add(this.label10);
+            this.pnlMain.Controls.Add(this.label11);
+            this.pnlMain.Controls.Add(this.btnSliceFolder);
+            this.pnlMain.Controls.Add(this.txtFirstGroupCount);
+            this.pnlMain.Controls.Add(this.txtProjectionTimeMs);
+            this.pnlMain.Controls.Add(this.txtProjectionTimeMsSecondGroup);
+            this.pnlMain.Controls.Add(this.label9);
+            this.pnlMain.Controls.Add(this.txtProjectionTimeMsFirstGroup);
+            this.pnlMain.Controls.Add(this.label13);
+            this.pnlMain.Controls.Add(this.label8);
+            this.pnlMain.Controls.Add(this.txtFolder);
+            this.pnlMain.Controls.Add(this.txtTimePassed);
+            this.pnlMain.Controls.Add(this.label1);
+            this.pnlMain.Controls.Add(this.label15);
+            this.pnlMain.Controls.Add(this.label4);
+            this.pnlMain.Controls.Add(this.label6);
+            this.pnlMain.Controls.Add(this.label2);
+            this.pnlMain.Controls.Add(this.btnStart);
+            this.pnlMain.Controls.Add(this.btnPause);
+            this.pnlMain.Controls.Add(this.progressBar);
+            this.pnlMain.Controls.Add(this.txtStatus);
+            this.pnlMain.Controls.Add(this.pbLayerThumbnail);
+            this.pnlMain.Controls.Add(this.txtTotalSlices);
+            this.pnlMain.Controls.Add(this.label3);
+            this.pnlMain.Controls.Add(this.txtCurrentSlice);
+            this.pnlMain.Controls.Add(this.label5);
+            this.pnlMain.Location = new System.Drawing.Point(0, 25);
+            this.pnlMain.Name = "pnlMain";
+            this.pnlMain.Size = new System.Drawing.Size(605, 436);
+            this.pnlMain.TabIndex = 29;
             // 
             // panel2
             // 
@@ -575,6 +516,94 @@
             this.panel2.Size = new System.Drawing.Size(173, 436);
             this.panel2.TabIndex = 30;
             // 
+            // label20
+            // 
+            this.label20.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.label20.AutoSize = true;
+            this.label20.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
+            this.label20.Location = new System.Drawing.Point(6, 175);
+            this.label20.Name = "label20";
+            this.label20.Size = new System.Drawing.Size(114, 18);
+            this.label20.TabIndex = 17;
+            this.label20.Text = "Manual controls";
+            // 
+            // label18
+            // 
+            this.label18.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.label18.AutoSize = true;
+            this.label18.Location = new System.Drawing.Point(6, 145);
+            this.label18.Name = "label18";
+            this.label18.Size = new System.Drawing.Size(83, 13);
+            this.label18.TabIndex = 11;
+            this.label18.Text = "Empty vat valve";
+            this.label18.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // label19
+            // 
+            this.label19.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.label19.AutoSize = true;
+            this.label19.Location = new System.Drawing.Point(6, 115);
+            this.label19.Name = "label19";
+            this.label19.Size = new System.Drawing.Size(51, 13);
+            this.label19.TabIndex = 8;
+            this.label19.Text = "Ink pump";
+            this.label19.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // label14
+            // 
+            this.label14.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.label14.AutoSize = true;
+            this.label14.Location = new System.Drawing.Point(6, 85);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(74, 13);
+            this.label14.TabIndex = 7;
+            this.label14.Text = "Bottom sensor";
+            this.label14.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // label12
+            // 
+            this.label12.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.label12.AutoSize = true;
+            this.label12.Location = new System.Drawing.Point(6, 25);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(96, 13);
+            this.label12.TabIndex = 0;
+            this.label12.Text = "Lift position (in mm)";
+            this.ToolTipHelp.SetToolTip(this.label12, "Current lift position related to the top sensor.\r\n-1 means the current position i" +
+        "s unknown. Initialize\r\nor move to top to fix.");
+            // 
+            // label17
+            // 
+            this.label17.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.label17.AutoSize = true;
+            this.label17.Location = new System.Drawing.Point(6, 55);
+            this.label17.Name = "label17";
+            this.label17.Size = new System.Drawing.Size(60, 13);
+            this.label17.TabIndex = 4;
+            this.label17.Text = "Top sensor";
+            this.label17.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // label16
+            // 
+            this.label16.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.label16.AutoSize = true;
+            this.label16.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
+            this.label16.Location = new System.Drawing.Point(6, -1);
+            this.label16.Name = "label16";
+            this.label16.Size = new System.Drawing.Size(95, 18);
+            this.label16.TabIndex = 2;
+            this.label16.Text = "Printer status";
+            // 
+            // lblPositionFromTopMm
+            // 
+            this.lblPositionFromTopMm.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblPositionFromTopMm.Location = new System.Drawing.Point(118, 27);
+            this.lblPositionFromTopMm.Name = "lblPositionFromTopMm";
+            this.lblPositionFromTopMm.Size = new System.Drawing.Size(46, 17);
+            this.lblPositionFromTopMm.TabIndex = 1;
+            this.lblPositionFromTopMm.Text = "-1";
+            this.lblPositionFromTopMm.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
             // btnInitialize
             // 
             this.btnInitialize.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -598,17 +627,6 @@
             this.ToolTipHelp.SetToolTip(this.btnMoveToTop, "Move lift to top position");
             this.btnMoveToTop.UseVisualStyleBackColor = true;
             this.btnMoveToTop.Click += new System.EventHandler(this.btnMoveToTop_Click);
-            // 
-            // label20
-            // 
-            this.label20.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.label20.AutoSize = true;
-            this.label20.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
-            this.label20.Location = new System.Drawing.Point(6, 175);
-            this.label20.Name = "label20";
-            this.label20.Size = new System.Drawing.Size(114, 18);
-            this.label20.TabIndex = 17;
-            this.label20.Text = "Manual controls";
             // 
             // btnEmergencyStop
             // 
@@ -679,17 +697,6 @@
             this.btnLiftUp.MouseLeave += new System.EventHandler(this.btnLiftUp_MouseLeave);
             this.btnLiftUp.MouseUp += new System.Windows.Forms.MouseEventHandler(this.btnLiftUp_MouseUp);
             // 
-            // label18
-            // 
-            this.label18.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.label18.AutoSize = true;
-            this.label18.Location = new System.Drawing.Point(6, 145);
-            this.label18.Name = "label18";
-            this.label18.Size = new System.Drawing.Size(83, 13);
-            this.label18.TabIndex = 11;
-            this.label18.Text = "Empty vat valve";
-            this.label18.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
             // ledEmptyVat
             // 
             this.ledEmptyVat.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -700,17 +707,6 @@
             this.ledEmptyVat.Size = new System.Drawing.Size(26, 27);
             this.ledEmptyVat.TabIndex = 10;
             this.ledEmptyVat.TabStop = false;
-            // 
-            // label19
-            // 
-            this.label19.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.label19.AutoSize = true;
-            this.label19.Location = new System.Drawing.Point(6, 115);
-            this.label19.Name = "label19";
-            this.label19.Size = new System.Drawing.Size(51, 13);
-            this.label19.TabIndex = 8;
-            this.label19.Text = "Ink pump";
-            this.label19.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // ledInkPump
             // 
@@ -723,17 +719,6 @@
             this.ledInkPump.TabIndex = 9;
             this.ledInkPump.TabStop = false;
             // 
-            // label14
-            // 
-            this.label14.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.label14.AutoSize = true;
-            this.label14.Location = new System.Drawing.Point(6, 85);
-            this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(74, 13);
-            this.label14.TabIndex = 7;
-            this.label14.Text = "Bottom sensor";
-            this.label14.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
             // ledBottomSensor
             // 
             this.ledBottomSensor.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -744,50 +729,6 @@
             this.ledBottomSensor.Size = new System.Drawing.Size(26, 27);
             this.ledBottomSensor.TabIndex = 6;
             this.ledBottomSensor.TabStop = false;
-            // 
-            // label12
-            // 
-            this.label12.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(6, 25);
-            this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(96, 13);
-            this.label12.TabIndex = 0;
-            this.label12.Text = "Lift position (in mm)";
-            this.ToolTipHelp.SetToolTip(this.label12, "Current lift position related to the top sensor.\r\n-1 means the current position i" +
-        "s unknown. Initialize\r\nor move to top to fix.");
-            // 
-            // label17
-            // 
-            this.label17.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.label17.AutoSize = true;
-            this.label17.Location = new System.Drawing.Point(6, 55);
-            this.label17.Name = "label17";
-            this.label17.Size = new System.Drawing.Size(60, 13);
-            this.label17.TabIndex = 4;
-            this.label17.Text = "Top sensor";
-            this.label17.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // label16
-            // 
-            this.label16.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.label16.AutoSize = true;
-            this.label16.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
-            this.label16.Location = new System.Drawing.Point(6, -1);
-            this.label16.Name = "label16";
-            this.label16.Size = new System.Drawing.Size(95, 18);
-            this.label16.TabIndex = 2;
-            this.label16.Text = "Printer status";
-            // 
-            // lblPositionFromTopMm
-            // 
-            this.lblPositionFromTopMm.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblPositionFromTopMm.Location = new System.Drawing.Point(118, 27);
-            this.lblPositionFromTopMm.Name = "lblPositionFromTopMm";
-            this.lblPositionFromTopMm.Size = new System.Drawing.Size(46, 17);
-            this.lblPositionFromTopMm.TabIndex = 1;
-            this.lblPositionFromTopMm.Text = "-1";
-            this.lblPositionFromTopMm.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
             // ledTopSensor
             // 
@@ -800,6 +741,63 @@
             this.ledTopSensor.TabIndex = 5;
             this.ledTopSensor.TabStop = false;
             // 
+            // btnConnect
+            // 
+            this.btnConnect.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnConnect.Image = global::Controller.Properties.Resources.glyphicons_265_electrical_plug;
+            this.btnConnect.Location = new System.Drawing.Point(343, 34);
+            this.btnConnect.Name = "btnConnect";
+            this.btnConnect.Padding = new System.Windows.Forms.Padding(0, 0, 0, 5);
+            this.btnConnect.Size = new System.Drawing.Size(80, 69);
+            this.btnConnect.TabIndex = 29;
+            this.btnConnect.Text = "Connect";
+            this.btnConnect.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
+            this.ToolTipHelp.SetToolTip(this.btnConnect, "Connect to the selected printer interface.");
+            this.btnConnect.UseVisualStyleBackColor = true;
+            this.btnConnect.Click += new System.EventHandler(this.btnConnect_Click);
+            // 
+            // btnStart
+            // 
+            this.btnStart.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnStart.Enabled = false;
+            this.btnStart.Image = global::Controller.Properties.Resources.glyphicons_173_play;
+            this.btnStart.Location = new System.Drawing.Point(515, 34);
+            this.btnStart.Name = "btnStart";
+            this.btnStart.Padding = new System.Windows.Forms.Padding(0, 0, 0, 5);
+            this.btnStart.Size = new System.Drawing.Size(80, 69);
+            this.btnStart.TabIndex = 8;
+            this.btnStart.Text = "Start";
+            this.btnStart.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
+            this.ToolTipHelp.SetToolTip(this.btnStart, "Start printing process.");
+            this.btnStart.UseVisualStyleBackColor = true;
+            this.btnStart.Click += new System.EventHandler(this.btnStart_Click);
+            // 
+            // btnPause
+            // 
+            this.btnPause.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnPause.Enabled = false;
+            this.btnPause.Image = global::Controller.Properties.Resources.glyphicons_174_pause;
+            this.btnPause.Location = new System.Drawing.Point(429, 34);
+            this.btnPause.Name = "btnPause";
+            this.btnPause.Padding = new System.Windows.Forms.Padding(0, 0, 0, 5);
+            this.btnPause.Size = new System.Drawing.Size(80, 69);
+            this.btnPause.TabIndex = 7;
+            this.btnPause.Text = "Pause";
+            this.btnPause.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
+            this.ToolTipHelp.SetToolTip(this.btnPause, "Pause the printing process.");
+            this.btnPause.UseVisualStyleBackColor = true;
+            this.btnPause.Click += new System.EventHandler(this.btnPause_Click);
+            // 
+            // pbLayerThumbnail
+            // 
+            this.pbLayerThumbnail.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.pbLayerThumbnail.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.pbLayerThumbnail.Location = new System.Drawing.Point(388, 208);
+            this.pbLayerThumbnail.Name = "pbLayerThumbnail";
+            this.pbLayerThumbnail.Size = new System.Drawing.Size(205, 144);
+            this.pbLayerThumbnail.TabIndex = 0;
+            this.pbLayerThumbnail.TabStop = false;
+            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -807,7 +805,7 @@
             this.ClientSize = new System.Drawing.Size(784, 458);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.menuStrip1);
-            this.Controls.Add(this.panel1);
+            this.Controls.Add(this.pnlMain);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
             this.MinimumSize = new System.Drawing.Size(800, 450);
@@ -816,15 +814,15 @@
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Main_FormClosing);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
-            this.panel1.ResumeLayout(false);
-            this.panel1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pbLayerThumbnail)).EndInit();
+            this.pnlMain.ResumeLayout(false);
+            this.pnlMain.PerformLayout();
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ledEmptyVat)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ledInkPump)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ledBottomSensor)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ledTopSensor)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pbLayerThumbnail)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -873,7 +871,7 @@
         private System.Windows.Forms.ToolStripMenuItem optionsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem hardwareConfigurationToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem simulatePrinterToolStripMenuItem;
-        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.Panel pnlMain;
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.Label label16;
         private System.Windows.Forms.Label lblPositionFromTopMm;

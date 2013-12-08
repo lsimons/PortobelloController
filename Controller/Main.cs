@@ -20,6 +20,7 @@ namespace Controller
         private PrinterProcess processor;
         private IPrinterInterface printerInterface;
         private MonitorPrinterStatus monitorPrinter;
+        private MachineConfig machineConfig;
 
         public Main()
         {
@@ -38,6 +39,7 @@ namespace Controller
             }
             this.beamerForm.SetBounds(bounds.X, bounds.Y, bounds.Width, bounds.Height);
             this.beamerForm.Show();
+            this.machineConfig = new MachineConfig();
         }
 
         private static Screen GetBeamerScreen()
@@ -118,7 +120,9 @@ namespace Controller
                 ToolTipHelp.SetToolTip(btnStart, "Start printing process.");
                 btnPause.Image = Properties.Resources.glyphicons_174_pause;
                 btnPause.Text = "Pause";
-                this.Close();
+                if (this.mainFormClosing) {
+                    this.Close();
+                }
             }
         }
 
@@ -130,7 +134,9 @@ namespace Controller
                 this.Invoke(invoker);
             } else {
                 this.monitorPrinter = null;
-                this.Close();
+                if (this.mainFormClosing) {
+                    this.Close();
+                }
             }
         }
 
@@ -240,8 +246,10 @@ namespace Controller
             }
         }
 
+        private bool mainFormClosing = false;
         private void Main_FormClosing(object sender, FormClosingEventArgs e)
         {
+            this.mainFormClosing = true;
             if (this.monitorPrinter != null) {
                 this.monitorPrinter.Stop();
                 e.Cancel = true;
@@ -587,6 +595,17 @@ namespace Controller
         private void btnLiftDown_MouseLeave(object sender, EventArgs e)
         {
             EndMoveDown();
+        }
+
+        private void hardwareConfigurationToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (this.printerInterface == null && this.processor == null) {
+                this.machineConfig.StartPosition = FormStartPosition.Manual;
+                this.machineConfig.Location = new Point(this.Location.X + 40, this.Location.Y + 30);
+                this.machineConfig.ShowDialog(this);
+            } else {
+                MessageBox.Show("Only change when not connected to the printer, stop printing and disconnect first.", "Disconnect...", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
         }
     }
 }

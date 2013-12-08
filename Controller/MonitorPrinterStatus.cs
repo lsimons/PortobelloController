@@ -33,7 +33,11 @@ namespace Controller
             this.mainForm.StatusMessage("Start monitoring printer");
             this.running = true;
             while (this.running) {
-                Thread.Sleep(100);
+                try {
+                    Thread.Sleep(100);
+                } catch (ThreadInterruptedException) {
+                    break;
+                }
                 if (this.bottomSensor != this.printerInterface.BottomSensor) {
                     this.bottomSensor = !this.bottomSensor;
                     this.mainForm.SetBottomSensor(this.bottomSensor);
