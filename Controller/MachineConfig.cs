@@ -23,10 +23,11 @@ namespace Controller
 
         private void MachineConfig_Load(object sender, EventArgs e)
         {
-            this.txtDipHeightUM.Text = CurrentDipValue.ToString();
+            this.txtDipHeightUM.Text = DipDepthMu.ToString();
+            this.txtInitializeHeightUM.Text = InitializePositionFromTopSensorMu.ToString();
         }
 
-        public int CurrentDipValue
+        public int DipDepthMu
         {
             get
             {
@@ -43,16 +44,33 @@ namespace Controller
             }
         }
 
-        public int LayerHeight
+        public int LayerHeightMu
         {
             get
             {
-                var currentDipValue = baseRegKey.GetValue("LayerHeightMu");
-                if (currentDipValue == null) {
+                var layerHeight = baseRegKey.GetValue("LayerHeightMu");
+                if (layerHeight == null) {
                     baseRegKey.SetValue("LayerHeightMu", 60, RegistryValueKind.DWord);
-                    currentDipValue = 60;
+                    layerHeight = 60;
                 }
-                return (int)currentDipValue;
+                return (int)layerHeight;
+            }
+        }
+
+        public int InitializePositionFromTopSensorMu
+        {
+            get
+            {
+                var initializeHeighMu = baseRegKey.GetValue("InitializeHeightFromTopMu");
+                if (initializeHeighMu == null) {
+                    baseRegKey.SetValue("InitializeHeightFromTopMu", 50000, RegistryValueKind.DWord);
+                    initializeHeighMu = 50000;
+                }
+                return (int)initializeHeighMu;
+            }
+            set
+            {
+                baseRegKey.SetValue("InitializeHeightFromTopMu", value, RegistryValueKind.DWord);
             }
         }
 
@@ -61,7 +79,11 @@ namespace Controller
             this.DialogResult = DialogResult.OK;
             int dipHeight;
             if (int.TryParse(this.txtDipHeightUM.Text, out dipHeight)) {
-                this.CurrentDipValue = dipHeight;
+                this.DipDepthMu = dipHeight;
+            }
+            int initializeHeight;
+            if (int.TryParse(this.txtInitializeHeightUM.Text, out initializeHeight)) {
+                this.InitializePositionFromTopSensorMu = initializeHeight;
             }
         }
 

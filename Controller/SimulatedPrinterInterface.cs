@@ -44,6 +44,8 @@ namespace Controller
             get { return this.connected; }
         }
 
+        public int InitializePrintHeightUm { get; set; }
+
         public bool ResinPump
         {
             get;
@@ -121,6 +123,10 @@ namespace Controller
         public void InitializePrinter()
         {
             this.mainForm.StatusMessage("Initialize lift");
+            MoveLiftToTop();
+            MoveLiftDown(this.InitializePrintHeightUm + 1500);
+            MoveLiftUp(1500);
+            this.mainForm.StatusMessage("Initialized lift");
         }
 
         public int LiftPositionInPulsesFromTopSensor

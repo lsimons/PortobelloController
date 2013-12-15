@@ -25,6 +25,11 @@ namespace Controller
         bool Connected { get; }
 
         /// <summary>
+        /// Connection status
+        /// </summary>
+        int InitializePrintHeightUm { get; set; }
+
+        /// <summary>
         /// Start / Stop resin pump when set, read to get status
         /// </summary>
         bool ResinPump { get; set; }

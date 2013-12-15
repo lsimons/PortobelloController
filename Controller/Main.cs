@@ -68,7 +68,7 @@ namespace Controller
                 if (string.IsNullOrWhiteSpace(sliceFolderDlg.SelectedPath)) {
                     MessageBox.Show("Select a folder with images first.");
                 } else {
-                    this.processor = new PrinterProcess(sliceFolderDlg.SelectedPath, this.beamerForm, this, this.printerInterface);
+                    this.processor = new PrinterProcess(sliceFolderDlg.SelectedPath, this.beamerForm, this, this.printerInterface, this.machineConfig);
                     this.processor.SetProjectionTime(this.projectionTimeMs);
                     if (this.projectionTimeMsFirstGroup > 0) {
                         this.processor.SetProjectionTimeFirstGroup(this.projectionTimeMsFirstGroup, this.projectionTimeMsFirstGroupCount);
@@ -83,6 +83,7 @@ namespace Controller
                     this.startTime = DateTime.Now;
                 }
             } else {
+                this.StatusMessage("Stopping printer process, please wait...");
                 this.processor.Stop();
                 btnStart.Enabled = false;
                 btnPause.Enabled = false;
@@ -472,7 +473,10 @@ namespace Controller
         {
             if (this.printerInterface != null && this.processor == null) {
                 this.btnInitialize.Enabled = false;
+                this.printerInterface.InitializePrintHeightUm = this.machineConfig.InitializePositionFromTopSensorMu;
+                this.printerInterface.ResinPump = true;
                 await Task.Run(new Action(this.printerInterface.InitializePrinter));
+                this.printerInterface.ResinPump = false;
                 this.btnInitialize.Enabled = true;
             }
         }
@@ -605,6 +609,18 @@ namespace Controller
                 this.machineConfig.ShowDialog(this);
             } else {
                 MessageBox.Show("Only change when not connected to the printer, stop printing and disconnect first.", "Disconnect...", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+        }
+
+        private void btnSaveAsInitialPos_Click(object sender, EventArgs e)
+        {
+            if (this.printerInterface != null && this.printerInterface.LiftPositionInUMFromTopSensor > 0) {
+                var dialogResult = MessageBox.Show("Are you sure you want to set the initial position to the current lift position (" + this.printerInterface.LiftPositionInUMFromTopSensor.ToString() + "um from top sensor)?", "Are you sure?", MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
+                if (dialogResult == System.Windows.Forms.DialogResult.OK) {
+                    this.machineConfig.InitializePositionFromTopSensorMu = this.printerInterface.LiftPositionInUMFromTopSensor;
+                }
+            } else {
+                MessageBox.Show("Cannot store position, make sure printer is connected and position is not -1", "Warning, no changes made", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
     }

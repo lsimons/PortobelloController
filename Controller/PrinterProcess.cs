@@ -23,28 +23,31 @@ namespace Controller
         private int projectionTimeMsFirstGroupCount = -1;
         private int projectionTimeMsSecondGroup = -1;
         private int projectionTimeMsSecondGroupCount = -1;
+        private int dipDownMu;
+        private int layerHeight;
+        private int dipUpMu;
+        private int initializeHeight;
 
         private object bufferLock = new object();
 
         public bool Pause { get; set; }
 
-        public PrinterProcess(string slicePath, BeamerOutput form, Main mainForm)
+        public PrinterProcess(string slicePath, BeamerOutput form, Main mainForm, IPrinterInterface printerInterface, MachineConfig machineConfig)
         {
-            InitializePrinterProcess(slicePath, form, mainForm, new LabjackPrinterInterface());
+            InitializePrinterProcess(slicePath, form, mainForm, printerInterface, machineConfig);
         }
 
-        public PrinterProcess(string slicePath, BeamerOutput form, Main mainForm, IPrinterInterface printerInterface)
-        {
-            InitializePrinterProcess(slicePath, form, mainForm, printerInterface);
-        }
-
-        private void InitializePrinterProcess(string slicePath, BeamerOutput form, Main mainForm, IPrinterInterface printerInterface)
+        private void InitializePrinterProcess(string slicePath, BeamerOutput form, Main mainForm, IPrinterInterface printerInterface, MachineConfig machineConfig)
         {
             this.slicePath = slicePath;
             this.beamerForm = form;
             this.mainForm = mainForm;
             this.printerInterface = printerInterface;
             this.imageBuffer = new Dictionary<string, Image>();
+            this.dipDownMu = machineConfig.DipDepthMu;
+            this.layerHeight = machineConfig.LayerHeightMu;
+            this.dipUpMu = this.dipDownMu - this.layerHeight;
+            this.initializeHeight = machineConfig.InitializePositionFromTopSensorMu;
         }
 
         internal void Stop()
@@ -110,8 +113,9 @@ namespace Controller
         {
             try {
                 this.printerInterface.ResinPump = true;
+                this.printerInterface.InitializePrintHeightUm = this.initializeHeight;
                 this.printerInterface.InitializePrinter();
-                Thread.Sleep(1000);
+                Thread.Sleep(2000);
             } finally {
                 this.printerInterface.ResinPump = false;
             }
@@ -125,7 +129,7 @@ namespace Controller
             int lastImageLoaded = 0;
             while (this.running) {
                 lock (imageBuffer) {
-                    while (this.imageBuffer.Count < 10 && images.Count > lastImageLoaded) {
+                    while (this.imageBuffer.Count < 10 && images.Count > lastImageLoaded && this.running) {
                         lastImageLoaded++;
                         var path = images[lastImageLoaded - 1];
                         imageBuffer[path] = GenerateImage(path);
@@ -149,7 +153,7 @@ namespace Controller
                 Project(images[i]);
                 MoveLift(i);
                 percentageDone = UpdatePercentageDone(count, percentageDone, i);
-                while (this.Pause) {
+                while (this.Pause && this.running) {
                     Thread.Sleep(200);
                 }
             }
@@ -163,12 +167,12 @@ namespace Controller
             if (this.projectionTimeMsFirstGroupCount > 0) {
                 Thread.Sleep(1000);
             } else if (this.projectionTimeMsSecondGroupCount > 0) {
-                this.printerInterface.MoveLiftDown(30);
+                this.printerInterface.MoveLiftDown(this.layerHeight / 2);
             } else {
-                this.printerInterface.MoveLiftDown(5000);
-                this.printerInterface.MoveLiftUp(4940);
+                this.printerInterface.MoveLiftDown(this.dipDownMu);
+                this.printerInterface.MoveLiftUp(this.dipUpMu);
             }
-            Thread.Sleep(200);
+            Thread.Sleep(250); // Allows fluid to settle on print area
         }
         
         private void Project(string imagePath)
