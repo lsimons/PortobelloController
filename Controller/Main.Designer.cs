@@ -73,6 +73,7 @@
             this.btnPause = new System.Windows.Forms.Button();
             this.pbLayerThumbnail = new System.Windows.Forms.PictureBox();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.btnSaveAsInitialPos = new System.Windows.Forms.Button();
             this.btnInitialize = new System.Windows.Forms.Button();
             this.btnMoveToTop = new System.Windows.Forms.Button();
             this.label20 = new System.Windows.Forms.Label();
@@ -95,7 +96,6 @@
             this.ToolTipHelp = new System.Windows.Forms.ToolTip(this.components);
             this.timerButtonLiftUp = new System.Windows.Forms.Timer(this.components);
             this.timerButtonLiftDown = new System.Windows.Forms.Timer(this.components);
-            this.btnSaveAsInitialPos = new System.Windows.Forms.Button();
             this.menuStrip1.SuspendLayout();
             this.pnlMain.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pbLayerThumbnail)).BeginInit();
@@ -180,7 +180,7 @@
             this.txtProjectionTimeMs.Name = "txtProjectionTimeMs";
             this.txtProjectionTimeMs.Size = new System.Drawing.Size(48, 20);
             this.txtProjectionTimeMs.TabIndex = 6;
-            this.txtProjectionTimeMs.Text = "1000";
+            this.txtProjectionTimeMs.Text = "2400";
             this.txtProjectionTimeMs.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.txtProjectionTimeMs.TextChanged += new System.EventHandler(this.txtProjectionTimeMs_TextChanged);
             // 
@@ -230,7 +230,7 @@
             this.txtProjectionTimeMsFirstGroup.Name = "txtProjectionTimeMsFirstGroup";
             this.txtProjectionTimeMsFirstGroup.Size = new System.Drawing.Size(48, 20);
             this.txtProjectionTimeMsFirstGroup.TabIndex = 2;
-            this.txtProjectionTimeMsFirstGroup.Text = "0";
+            this.txtProjectionTimeMsFirstGroup.Text = "15000";
             this.txtProjectionTimeMsFirstGroup.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.txtProjectionTimeMsFirstGroup.TextChanged += new System.EventHandler(this.txtProjectionTimeMsFirstGroup_TextChanged);
             // 
@@ -249,7 +249,7 @@
             this.txtProjectionTimeMsSecondGroup.Name = "txtProjectionTimeMsSecondGroup";
             this.txtProjectionTimeMsSecondGroup.Size = new System.Drawing.Size(48, 20);
             this.txtProjectionTimeMsSecondGroup.TabIndex = 4;
-            this.txtProjectionTimeMsSecondGroup.Text = "0";
+            this.txtProjectionTimeMsSecondGroup.Text = "3000";
             this.txtProjectionTimeMsSecondGroup.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.txtProjectionTimeMsSecondGroup.TextChanged += new System.EventHandler(this.txtProjectionTimeMsSecondGroup_TextChanged);
             // 
@@ -277,7 +277,7 @@
             this.txtFirstGroupCount.Name = "txtFirstGroupCount";
             this.txtFirstGroupCount.Size = new System.Drawing.Size(33, 20);
             this.txtFirstGroupCount.TabIndex = 3;
-            this.txtFirstGroupCount.Text = "0";
+            this.txtFirstGroupCount.Text = "3";
             this.txtFirstGroupCount.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.txtFirstGroupCount.TextChanged += new System.EventHandler(this.txtFirstGroupCount_TextChanged);
             // 
@@ -305,7 +305,7 @@
             this.txtSecondGroupCount.Name = "txtSecondGroupCount";
             this.txtSecondGroupCount.Size = new System.Drawing.Size(33, 20);
             this.txtSecondGroupCount.TabIndex = 5;
-            this.txtSecondGroupCount.Text = "0";
+            this.txtSecondGroupCount.Text = "5";
             this.txtSecondGroupCount.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.txtSecondGroupCount.TextChanged += new System.EventHandler(this.txtSecondGroupCount_TextChanged);
             // 
@@ -578,6 +578,17 @@
             this.panel2.Size = new System.Drawing.Size(173, 468);
             this.panel2.TabIndex = 30;
             // 
+            // btnSaveAsInitialPos
+            // 
+            this.btnSaveAsInitialPos.Location = new System.Drawing.Point(9, 276);
+            this.btnSaveAsInitialPos.Name = "btnSaveAsInitialPos";
+            this.btnSaveAsInitialPos.Size = new System.Drawing.Size(155, 26);
+            this.btnSaveAsInitialPos.TabIndex = 20;
+            this.btnSaveAsInitialPos.Text = "Set initialize position";
+            this.ToolTipHelp.SetToolTip(this.btnSaveAsInitialPos, "Use this to set the current position as the default position to initialize to.");
+            this.btnSaveAsInitialPos.UseVisualStyleBackColor = true;
+            this.btnSaveAsInitialPos.Click += new System.EventHandler(this.btnSaveAsInitialPos_Click);
+            // 
             // btnInitialize
             // 
             this.btnInitialize.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -802,17 +813,6 @@
             this.ledTopSensor.Size = new System.Drawing.Size(26, 27);
             this.ledTopSensor.TabIndex = 5;
             this.ledTopSensor.TabStop = false;
-            // 
-            // btnSaveAsInitialPos
-            // 
-            this.btnSaveAsInitialPos.Location = new System.Drawing.Point(9, 276);
-            this.btnSaveAsInitialPos.Name = "btnSaveAsInitialPos";
-            this.btnSaveAsInitialPos.Size = new System.Drawing.Size(155, 26);
-            this.btnSaveAsInitialPos.TabIndex = 20;
-            this.btnSaveAsInitialPos.Text = "Set initialize position";
-            this.ToolTipHelp.SetToolTip(this.btnSaveAsInitialPos, "Use this to set the current position as the default position to initialize to.");
-            this.btnSaveAsInitialPos.UseVisualStyleBackColor = true;
-            this.btnSaveAsInitialPos.Click += new System.EventHandler(this.btnSaveAsInitialPos_Click);
             // 
             // Main
             // 

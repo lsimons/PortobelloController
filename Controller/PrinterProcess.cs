@@ -82,11 +82,11 @@ namespace Controller
             try {
                 this.mainForm.StatusMessage("Loading images list " + this.slicePath);
                 LoadImages();
-                InitializePrinter();
-                this.mainForm.StatusMessage("Loading complete");
                 var bufferThread = new Thread(FillBufferThread);
                 bufferThread.IsBackground = true;
                 bufferThread.Start();
+                InitializePrinter();
+                this.mainForm.StatusMessage("Loading complete");
                 ProjectAllImages();
                 SignalDone();
                 this.running = false;
@@ -115,10 +115,12 @@ namespace Controller
                 this.printerInterface.ResinPump = true;
                 this.printerInterface.InitializePrintHeightUm = this.initializeHeight;
                 this.printerInterface.InitializePrinter();
-                Thread.Sleep(2000);
+                this.mainForm.StatusMessage("Initializing position done, allow pump to fill reservoir. (10 seconds)");
+                Thread.Sleep(10000);
             } finally {
                 this.printerInterface.ResinPump = false;
             }
+            Thread.Sleep(800);
         }
 
         private void FillBufferThread()
@@ -165,9 +167,9 @@ namespace Controller
                 throw new Exception("Maximum print size reached.");
             }
             if (this.projectionTimeMsFirstGroupCount > 0) {
-                Thread.Sleep(1000);
+                Thread.Sleep(1750);
             } else if (this.projectionTimeMsSecondGroupCount > 0) {
-                this.printerInterface.MoveLiftDown(this.layerHeight / 2);
+                this.printerInterface.MoveLiftDown(this.layerHeight);
             } else {
                 this.printerInterface.MoveLiftDown(this.dipDownMu);
                 this.printerInterface.MoveLiftUp(this.dipUpMu);

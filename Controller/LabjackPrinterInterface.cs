@@ -32,9 +32,11 @@ namespace Controller
         // Valve enable out: EIO6
         private const int VALVE_ENABLE_OUT = 14;
         // Maximum height to move
-        private const int MAX_PULSE_COUNT_FROM_TOP = 10000;
+        private const int MAX_PULSE_COUNT_FROM_TOP = 1000000;
         // Stepper pulses per mm
         private const int PULSE_COUNT_PER_MM = 640;
+
+        private static readonly object moveLiftLock = new object();
 
         private U3 labjackBoard;
 
@@ -54,107 +56,93 @@ namespace Controller
 
         public void Reset()
         {
-            LJUD.ePut(this.labjackBoard.ljhandle, LJUD.IO.PIN_CONFIGURATION_RESET, 0, 0, 0);
-            //Set the timer/counter pin offset to 4, which will put the first
-            //timer/counter on FIO4.
-            LJUD.AddRequest(this.labjackBoard.ljhandle, LJUD.IO.PUT_CONFIG, LJUD.CHANNEL.TIMER_COUNTER_PIN_OFFSET, LabjackPrinterInterface.PWM_OFFSET, 0, 0);
+            lock (LabjackPrinterInterface.moveLiftLock) {
+                LJUD.ePut(this.labjackBoard.ljhandle, LJUD.IO.PIN_CONFIGURATION_RESET, 0, 0, 0);
+                //Set the timer/counter pin offset to 4, which will put the first
+                //timer/counter on FIO4.
+                LJUD.AddRequest(this.labjackBoard.ljhandle, LJUD.IO.PUT_CONFIG, LJUD.CHANNEL.TIMER_COUNTER_PIN_OFFSET, LabjackPrinterInterface.PWM_OFFSET, 0, 0);
 
-            //Use the 48 MHz timer clock base with devisor, clock_0 disabled.
-            LJUD.AddRequest(this.labjackBoard.ljhandle, LJUD.IO.PUT_CONFIG, LJUD.CHANNEL.TIMER_CLOCK_BASE, (double)LJUD.TIMERCLOCKS.MHZ48_DIV, 0, 0);
+                //Use the 48 MHz timer clock base with devisor, clock_0 disabled.
+                LJUD.AddRequest(this.labjackBoard.ljhandle, LJUD.IO.PUT_CONFIG, LJUD.CHANNEL.TIMER_CLOCK_BASE, (double)LJUD.TIMERCLOCKS.MHZ48_DIV, 0, 0);
 
-            LJUD.AddRequest(this.labjackBoard.ljhandle, LJUD.IO.PUT_CONFIG, LJUD.CHANNEL.TIMER_CLOCK_DIVISOR, 200, 0, 0);
+                LJUD.AddRequest(this.labjackBoard.ljhandle, LJUD.IO.PUT_CONFIG, LJUD.CHANNEL.TIMER_CLOCK_DIVISOR, 200, 0, 0);
 
-            //Make sure Counter0 is disabled.
-            LJUD.AddRequest(this.labjackBoard.ljhandle, LJUD.IO.PUT_COUNTER_ENABLE, 0, 0, 0, 0);
+                //Make sure Counter0 is disabled.
+                LJUD.AddRequest(this.labjackBoard.ljhandle, LJUD.IO.PUT_COUNTER_ENABLE, 0, 0, 0, 0);
 
-            //Enable Counter1.  It will use the next available line, FIO6.
-            LJUD.AddRequest(this.labjackBoard.ljhandle, LJUD.IO.PUT_COUNTER_ENABLE, 1, 1, 0, 0);
+                //Enable Counter1.  It will use the next available line, FIO6.
+                LJUD.AddRequest(this.labjackBoard.ljhandle, LJUD.IO.PUT_COUNTER_ENABLE, 1, 1, 0, 0);
 
-            //Execute the requests.
-            LJUD.GoOne(this.labjackBoard.ljhandle);
-            
-            // Set outputs
-            ResinPump = false;
-            ReservoirValve = false;
-            LiftEnabled = true;
-            FanEnabled = true;
+                //Execute the requests.
+                LJUD.GoOne(this.labjackBoard.ljhandle);
+
+                // Set outputs
+                ResinPump = false;
+                ReservoirValve = false;
+                LiftEnabled = true;
+                FanEnabled = true;
+            }
         }
 
         public bool Connected { get; private set; }
 
         public int InitializePrintHeightUm { get; set; }
 
+        private bool resinPump = false;
         public bool ResinPump
         {
             get
             {
-                double value = 0;
-                LJUD.eGet(this.labjackBoard.ljhandle, LJUD.IO.GET_DIGITAL_BIT, LabjackPrinterInterface.PUMP_ENABLE_OUT, ref value, 0);
-                if (value == 1) {
-                    return true;
-                } else {
-                    return false;
-                }
+                return this.resinPump;
             }
             set
             {
+                this.resinPump = value;
                 LJUD.ePut(this.labjackBoard.ljhandle, LJUD.IO.PUT_DIGITAL_BIT, LabjackPrinterInterface.PUMP_ENABLE_OUT, value ? 1 : 0, 0);
             }
         }
 
+        private bool reservoirValve = false;
         public bool ReservoirValve
         {
             get
             {
-                double value = 0;
-                LJUD.eGet(this.labjackBoard.ljhandle, LJUD.IO.GET_DIGITAL_BIT, LabjackPrinterInterface.VALVE_ENABLE_OUT, ref value, 0);
-                if (value == 1) {
-                    return true;
-                } else {
-                    return false;
-                }
+                return this.reservoirValve;
             }
             set
             {
+                this.reservoirValve = value;
                 LJUD.ePut(this.labjackBoard.ljhandle, LJUD.IO.PUT_DIGITAL_BIT, LabjackPrinterInterface.VALVE_ENABLE_OUT, value ? 1 : 0, 0);
             }
         }
 
+        private bool liftEnabled = true;
         public bool LiftEnabled
         {
             get
             {
-                double value = 0;
-                LJUD.eGet(this.labjackBoard.ljhandle, LJUD.IO.GET_DIGITAL_BIT, LabjackPrinterInterface.LIFT_ENABLE_OUT, ref value, 0);
-                if (value == 1) {
-                    return true;
-                } else {
-                    return false;
-                }
+                return this.liftEnabled;
             }
             set
             {
                 if (value == false) {
                     this.LiftPositionInPulsesFromTopSensor = -1;
                 }
+                this.liftEnabled = value;
                 LJUD.ePut(this.labjackBoard.ljhandle, LJUD.IO.PUT_DIGITAL_BIT, LabjackPrinterInterface.LIFT_ENABLE_OUT, value ? 1 : 0, 0);
             }
         }
 
+        private bool fanEnabled = true;
         public bool FanEnabled
         {
             get
             {
-                double value = 0;
-                LJUD.eGet(this.labjackBoard.ljhandle, LJUD.IO.GET_DIGITAL_BIT, LabjackPrinterInterface.FAN_ENABLE_OUT, ref value, 0);
-                if (value == 1) {
-                    return true;
-                } else {
-                    return false;
-                }
+                return this.fanEnabled;
             }
             set
             {
+                this.fanEnabled = value;
                 LJUD.ePut(this.labjackBoard.ljhandle, LJUD.IO.PUT_DIGITAL_BIT, LabjackPrinterInterface.FAN_ENABLE_OUT, value ? 1 : 0, 0);
             }
         }
@@ -189,44 +177,53 @@ namespace Controller
 
         private void MovePulses(int pulseCount, bool moveUp)
         {
-            if (pulseCount <= 0) {
-                return;
+            lock (LabjackPrinterInterface.moveLiftLock) {
+                try {
+                    if (pulseCount <= 0) {
+                        return;
+                    }
+                    // Basically works like this:
+                    // 1. Set timer0 as a PWM driver which counts to 8bit, duty cycle 50% (essentially dividing clock frequency by 256)
+                    // 2. Set timer1 as a stop timer which counts to 'pulseCount' and stops timer0 once stop count is reached
+                    // 3. Push to U3 board
+                    // 4. Wait for timer1 to indicate the 'pulseCount' is reached
+
+                    //Enable 2 timers.  They will use FIO4-FIO5.
+                    LJUD.AddRequest(this.labjackBoard.ljhandle, LJUD.IO.PUT_CONFIG, LJUD.CHANNEL.NUMBER_TIMERS_ENABLED, 2, 0, 0);
+
+                    // Frequency out
+                    LJUD.AddRequest(this.labjackBoard.ljhandle, LJUD.IO.PUT_TIMER_MODE, 0, (double)LJUD.TIMERMODE.FREQOUT, 0, 0);
+
+                    // Create 2.5 Khz
+                    LJUD.AddRequest(this.labjackBoard.ljhandle, LJUD.IO.PUT_TIMER_VALUE, 0, 48, 0, 0);
+
+                    // Timer1 is used to stop timer0 after specified interval count.
+                    LJUD.AddRequest(this.labjackBoard.ljhandle, LJUD.IO.PUT_TIMER_MODE, 1, (double)LJUD.TIMERMODE.TIMERSTOP, 0, 0);
+
+                    LJUD.AddRequest(this.labjackBoard.ljhandle, LJUD.IO.PUT_TIMER_VALUE, 1, pulseCount, 0, 0);
+
+                    LJUD.AddRequest(this.labjackBoard.ljhandle, LJUD.IO.PUT_COUNTER_RESET, 1, 0, 0, 0);
+
+                    // Move in the right direction
+                    LJUD.AddRequest(this.labjackBoard.ljhandle, LJUD.IO.PUT_DIGITAL_BIT, LabjackPrinterInterface.LIFT_DIR_OUT, (moveUp ? 1 : 0), 0, 0);
+
+                    //Execute the requests.
+                    LJUD.GoOne(this.labjackBoard.ljhandle);
+
+                    // Value is unsigned 32 bit int
+                    // The MSW of the read from this timer mode returns the number of edges counted, but does not increment
+                    // past the stop count value.  The LSW of the read returns edges waiting for.
+                    double counterVal = 0;
+                    DateTime expectedEndTime = DateTime.UtcNow.AddSeconds(
+                        Math.Ceiling((double)pulseCount / 2400) // Frequency = 2500 pulses / second. small margin for max time
+                    );
+                    do {
+                        LJUD.eGet(this.labjackBoard.ljhandle, LJUD.IO.GET_COUNTER, 1, ref counterVal, 0);
+                    } while ((UInt32)counterVal < pulseCount && DateTime.UtcNow < expectedEndTime);
+                } catch (LabJackUDException err) {
+                    Console.WriteLine(err.ToString());
+                }
             }
-            // Basically works like this:
-            // 1. Set timer0 as a PWM driver which counts to 8bit, duty cycle 50% (essentially dividing clock frequency by 256)
-            // 2. Set timer1 as a stop timer which counts to 'pulseCount' and stops timer0 once stop count is reached
-            // 3. Push to U3 board
-            // 4. Wait for timer1 to indicate the 'pulseCount' is reached
-
-            //Enable 2 timers.  They will use FIO4-FIO5.
-            LJUD.AddRequest(this.labjackBoard.ljhandle, LJUD.IO.PUT_CONFIG, LJUD.CHANNEL.NUMBER_TIMERS_ENABLED, 2, 0, 0);
-
-            // Frequency out
-            LJUD.AddRequest(this.labjackBoard.ljhandle, LJUD.IO.PUT_TIMER_MODE, 0, (double)LJUD.TIMERMODE.FREQOUT, 0, 0);
-
-            // Create 2.5 Khz
-            LJUD.AddRequest(this.labjackBoard.ljhandle, LJUD.IO.PUT_TIMER_VALUE, 0, 48, 0, 0);
-
-            // Timer1 is used to stop timer0 after specified interval count.
-            LJUD.AddRequest(this.labjackBoard.ljhandle, LJUD.IO.PUT_TIMER_MODE, 1, (double)LJUD.TIMERMODE.TIMERSTOP, 0, 0);
-            
-            LJUD.AddRequest(this.labjackBoard.ljhandle, LJUD.IO.PUT_TIMER_VALUE, 1, pulseCount, 0, 0);
-
-            LJUD.AddRequest(this.labjackBoard.ljhandle, LJUD.IO.PUT_COUNTER_RESET, 1, 0, 0, 0); 
-
-            // Move in the right direction
-            LJUD.AddRequest(this.labjackBoard.ljhandle, LJUD.IO.PUT_DIGITAL_BIT, LabjackPrinterInterface.LIFT_DIR_OUT, (moveUp ? 1 : 0), 0, 0);
-
-            //Execute the requests.
-            LJUD.GoOne(this.labjackBoard.ljhandle);
-
-            // Value is unsigned 32 bit int
-            // The MSW of the read from this timer mode returns the number of edges counted, but does not increment
-            // past the stop count value.  The LSW of the read returns edges waiting for.
-            double counterVal = 0;
-            do {
-                LJUD.eGet(this.labjackBoard.ljhandle, LJUD.IO.GET_COUNTER, 1, ref counterVal, 0);
-            } while ((UInt32)counterVal < (pulseCount - 5));
         }
 
         public void MoveLiftUp(int microMeter)
@@ -280,8 +277,8 @@ namespace Controller
         public void InitializePrinter()
         {
             this.MoveLiftToTop();
-            this.MoveLiftDown(this.InitializePrintHeightUm + 1500);
-            this.MoveLiftUp(1500);
+            this.MoveLiftDown(this.InitializePrintHeightUm + 8000);
+            this.MoveLiftUp(8000);
         }
 
         private int liftPositionInPulsesFromTopSensor = -1;
@@ -294,7 +291,11 @@ namespace Controller
             private set
             {
                 if (value < 0) {
-                    this.liftPositionInPulsesFromTopSensor = -1;
+                    if (this.TopSensor) {
+                        this.liftPositionInPulsesFromTopSensor = 0;
+                    } else {
+                        this.liftPositionInPulsesFromTopSensor = -1;
+                    }
                 } else {
                     this.liftPositionInPulsesFromTopSensor = value;
                 }

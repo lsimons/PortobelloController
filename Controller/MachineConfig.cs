@@ -63,8 +63,8 @@ namespace Controller
             {
                 var initializeHeighMu = baseRegKey.GetValue("InitializeHeightFromTopMu");
                 if (initializeHeighMu == null) {
-                    baseRegKey.SetValue("InitializeHeightFromTopMu", 50000, RegistryValueKind.DWord);
-                    initializeHeighMu = 50000;
+                    baseRegKey.SetValue("InitializeHeightFromTopMu", 24000, RegistryValueKind.DWord);
+                    initializeHeighMu = 24000;
                 }
                 return (int)initializeHeighMu;
             }

@@ -177,8 +177,8 @@ namespace Controller
             return value;
         }
 
-        private int projectionTimeMsFirstGroup = -1;
-        private int projectionTimeMsFirstGroupCount = -1;
+        private int projectionTimeMsFirstGroup = 15000;
+        private int projectionTimeMsFirstGroupCount = 3;
         private void txtProjectionTimeMsFirstGroup_TextChanged(object sender, EventArgs e)
         {
             var oldValue = txtProjectionTimeMsFirstGroup.Text;
@@ -203,8 +203,8 @@ namespace Controller
             }
         }
 
-        private int projectionTimeMsSecondGroup = -1;
-        private int projectionTimeMsSecondGroupCount = -1;
+        private int projectionTimeMsSecondGroup = 3000;
+        private int projectionTimeMsSecondGroupCount = 5;
         private void txtProjectionTimeMsSecondGroup_TextChanged(object sender, EventArgs e)
         {
             var oldValue = txtProjectionTimeMsSecondGroup.Text;
@@ -367,6 +367,7 @@ namespace Controller
                     this.StatusMessage("Error connecting: " + errors);
                     this.printerInterface = null;
                 } else {
+                    this.printerInterface.Reset();
                     this.btnStart.Enabled = true;
                     this.btnPause.Enabled = true;
                     btnConnect.Image = Properties.Resources.glyphicons_265_electrical_plug_on;
@@ -382,8 +383,12 @@ namespace Controller
                     }
                     this.processor.Stop();
                 }
-                this.monitorPrinter.Close();
-                this.printerInterface.Disconnect();
+                if (this.monitorPrinter != null) {
+                    this.monitorPrinter.Close();
+                }
+                if (this.printerInterface != null) {
+                    this.printerInterface.Disconnect();
+                }
                 this.printerInterface = null;
                 this.btnStart.Enabled = false;
                 this.btnPause.Enabled = false;
@@ -476,7 +481,11 @@ namespace Controller
                 this.printerInterface.InitializePrintHeightUm = this.machineConfig.InitializePositionFromTopSensorMu;
                 this.printerInterface.ResinPump = true;
                 await Task.Run(new Action(this.printerInterface.InitializePrinter));
-                this.printerInterface.ResinPump = false;
+                this.StatusMessage("Allow resin pump to run a bit longer to fill reservoir. (5 seconds)");
+                await Task.Run(() => {
+                    Thread.Sleep(5000);
+                    this.printerInterface.ResinPump = false;
+                });
                 this.btnInitialize.Enabled = true;
             }
         }
@@ -535,8 +544,7 @@ namespace Controller
             this.liftMovingUp = true;
             new Thread(() => {
                 while (this.liftMovingUp && this.printerInterface != null && this.processor == null) {
-                    this.printerInterface.MoveLiftUp(100);
-                    Thread.Sleep(0);
+                    this.printerInterface.MoveLiftUp(200);
                 }
             }).Start();
         }
@@ -575,8 +583,7 @@ namespace Controller
             this.liftMovingDown = true;
             new Thread(() => {
                 while (this.liftMovingDown && this.printerInterface != null && this.processor == null) {
-                    this.printerInterface.MoveLiftDown(100);
-                    Thread.Sleep(0);
+                    this.printerInterface.MoveLiftDown(200);
                 }
             }).Start();
         }

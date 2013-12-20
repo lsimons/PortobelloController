@@ -16,7 +16,11 @@ namespace Controller
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Main());
+            try {
+                Application.Run(new Main());
+            } catch (Exception err) {
+                MessageBox.Show("Critical error: " + Environment.NewLine + err.ToString());
+            }
         }
     }
 }
