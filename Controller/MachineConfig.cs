@@ -25,6 +25,9 @@ namespace Controller
         {
             this.txtDipHeightUM.Text = DipDepthMu.ToString();
             this.txtInitializeHeightUM.Text = InitializePositionFromTopSensorMu.ToString();
+            if (this.cbLayerThickness.Items.Contains(this.LayerHeightMu.ToString())) {
+                this.cbLayerThickness.SelectedItem = this.LayerHeightMu.ToString();
+            }
         }
 
         public int DipDepthMu
@@ -50,10 +53,14 @@ namespace Controller
             {
                 var layerHeight = baseRegKey.GetValue("LayerHeightMu");
                 if (layerHeight == null) {
-                    baseRegKey.SetValue("LayerHeightMu", 60, RegistryValueKind.DWord);
-                    layerHeight = 60;
+                    baseRegKey.SetValue("LayerHeightMu", 62, RegistryValueKind.DWord);
+                    layerHeight = 62;
                 }
                 return (int)layerHeight;
+            }
+            set
+            {
+                baseRegKey.SetValue("LayerHeightMu", value, RegistryValueKind.DWord);
             }
         }
 
@@ -85,6 +92,7 @@ namespace Controller
             if (int.TryParse(this.txtInitializeHeightUM.Text, out initializeHeight)) {
                 this.InitializePositionFromTopSensorMu = initializeHeight;
             }
+            this.LayerHeightMu = int.Parse(this.cbLayerThickness.SelectedItem as string);
         }
 
         private void btnCancel_Click(object sender, EventArgs e)

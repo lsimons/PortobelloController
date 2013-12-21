@@ -34,12 +34,14 @@
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.txtInitializeHeightUM = new System.Windows.Forms.TextBox();
+            this.cbLayerThickness = new System.Windows.Forms.ComboBox();
+            this.label3 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // btnOK
             // 
             this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnOK.Location = new System.Drawing.Point(203, 84);
+            this.btnOK.Location = new System.Drawing.Point(203, 91);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(75, 23);
             this.btnOK.TabIndex = 0;
@@ -51,7 +53,7 @@
             // 
             this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(284, 84);
+            this.btnCancel.Location = new System.Drawing.Point(284, 91);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 23);
             this.btnCancel.TabIndex = 1;
@@ -91,13 +93,37 @@
             this.txtInitializeHeightUM.Size = new System.Drawing.Size(174, 20);
             this.txtInitializeHeightUM.TabIndex = 4;
             // 
+            // cbLayerThickness
+            // 
+            this.cbLayerThickness.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbLayerThickness.FormattingEnabled = true;
+            this.cbLayerThickness.Items.AddRange(new object[] {
+            "31",
+            "62",
+            "88"});
+            this.cbLayerThickness.Location = new System.Drawing.Point(185, 64);
+            this.cbLayerThickness.Name = "cbLayerThickness";
+            this.cbLayerThickness.Size = new System.Drawing.Size(174, 21);
+            this.cbLayerThickness.TabIndex = 6;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(12, 67);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(104, 13);
+            this.label3.TabIndex = 7;
+            this.label3.Text = "Layer thickness (mu)";
+            // 
             // MachineConfig
             // 
             this.AcceptButton = this.btnOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size(371, 119);
+            this.ClientSize = new System.Drawing.Size(371, 126);
+            this.Controls.Add(this.label3);
+            this.Controls.Add(this.cbLayerThickness);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.txtInitializeHeightUM);
             this.Controls.Add(this.label1);
@@ -105,8 +131,8 @@
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.btnOK);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.MaximumSize = new System.Drawing.Size(387, 157);
-            this.MinimumSize = new System.Drawing.Size(387, 157);
+            this.MaximumSize = new System.Drawing.Size(387, 164);
+            this.MinimumSize = new System.Drawing.Size(387, 164);
             this.Name = "MachineConfig";
             this.Text = "Machine Config";
             this.Load += new System.EventHandler(this.MachineConfig_Load);
@@ -123,5 +149,7 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox txtInitializeHeightUM;
+        private System.Windows.Forms.ComboBox cbLayerThickness;
+        private System.Windows.Forms.Label label3;
     }
 }

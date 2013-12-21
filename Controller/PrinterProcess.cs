@@ -82,6 +82,7 @@ namespace Controller
             try {
                 this.mainForm.StatusMessage("Loading images list " + this.slicePath);
                 LoadImages();
+                this.mainForm.SetTotalSlices(this.images.Count);
                 var bufferThread = new Thread(FillBufferThread);
                 bufferThread.IsBackground = true;
                 bufferThread.Start();
@@ -144,7 +145,6 @@ namespace Controller
         private void ProjectAllImages()
         {
             var count = images.Count;
-            this.mainForm.SetTotalSlices(count);
             var percentageDone = 0;
             for (int i = 0; i < count; i++) {
                 this.mainForm.SetCurrentSlice(i+1);
