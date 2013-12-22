@@ -410,9 +410,9 @@ namespace Controller
                 this.Invoke(handle, state);
             } else {
                 if (state) {
-                    this.ledBottomSensor.Image = Properties.Resources.led_blue;
+                    this.ledBottomSensor.BackgroundImage = Properties.Resources.led_blue;
                 } else {
-                    this.ledBottomSensor.Image = Properties.Resources.led_off;
+                    this.ledBottomSensor.BackgroundImage = Properties.Resources.led_off;
                 }
             }
         }
@@ -424,9 +424,9 @@ namespace Controller
                 this.Invoke(handle, state);
             } else {
                 if (state) {
-                    this.ledTopSensor.Image = Properties.Resources.led_blue;
+                    this.ledTopSensor.BackgroundImage = Properties.Resources.led_blue;
                 } else {
-                    this.ledTopSensor.Image = Properties.Resources.led_off;
+                    this.ledTopSensor.BackgroundImage = Properties.Resources.led_off;
                 }
             }
         }
@@ -438,9 +438,9 @@ namespace Controller
                 this.Invoke(handle, state);
             } else {
                 if (state) {
-                    this.ledInkPump.Image = Properties.Resources.led_blue;
+                    this.ledInkPump.BackgroundImage = Properties.Resources.led_blue;
                 } else {
-                    this.ledInkPump.Image = Properties.Resources.led_off;
+                    this.ledInkPump.BackgroundImage = Properties.Resources.led_off;
                 }
             }
         }
@@ -452,9 +452,9 @@ namespace Controller
                 this.Invoke(handle, state);
             } else {
                 if (state) {
-                    this.ledEmptyVat.Image = Properties.Resources.led_blue;
+                    this.ledEmptyVat.BackgroundImage = Properties.Resources.led_blue;
                 } else {
-                    this.ledEmptyVat.Image = Properties.Resources.led_off;
+                    this.ledEmptyVat.BackgroundImage = Properties.Resources.led_off;
                 }
             }
         }
