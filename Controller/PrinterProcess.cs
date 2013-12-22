@@ -27,6 +27,7 @@ namespace Controller
         private int layerHeight;
         private int dipUpMu;
         private int initializeHeight;
+        private int pumpDelayAfterInitialize;
 
         private object bufferLock = new object();
 
@@ -48,6 +49,7 @@ namespace Controller
             this.layerHeight = machineConfig.LayerHeightMu;
             this.dipUpMu = this.dipDownMu - this.layerHeight;
             this.initializeHeight = machineConfig.InitializePositionFromTopSensorMu;
+            this.pumpDelayAfterInitialize = machineConfig.PumpTimeAfterInitializeSeconds;
         }
 
         internal void Stop()
@@ -116,8 +118,8 @@ namespace Controller
                 this.printerInterface.ResinPump = true;
                 this.printerInterface.InitializePrintHeightUm = this.initializeHeight;
                 this.printerInterface.InitializePrinter();
-                this.mainForm.StatusMessage("Initializing position done, allow pump to fill reservoir. (10 seconds)");
-                Thread.Sleep(10000);
+                this.mainForm.StatusMessage("Initializing position done, allow pump to fill reservoir. (" + this.pumpDelayAfterInitialize + " seconds)");
+                Thread.Sleep(this.pumpDelayAfterInitialize * 1000);
             } finally {
                 this.printerInterface.ResinPump = false;
             }

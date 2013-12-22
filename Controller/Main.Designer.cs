@@ -180,7 +180,7 @@
             this.txtProjectionTimeMs.Name = "txtProjectionTimeMs";
             this.txtProjectionTimeMs.Size = new System.Drawing.Size(48, 20);
             this.txtProjectionTimeMs.TabIndex = 6;
-            this.txtProjectionTimeMs.Text = "2400";
+            this.txtProjectionTimeMs.Text = "0";
             this.txtProjectionTimeMs.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.txtProjectionTimeMs.TextChanged += new System.EventHandler(this.txtProjectionTimeMs_TextChanged);
             // 
@@ -230,7 +230,7 @@
             this.txtProjectionTimeMsFirstGroup.Name = "txtProjectionTimeMsFirstGroup";
             this.txtProjectionTimeMsFirstGroup.Size = new System.Drawing.Size(48, 20);
             this.txtProjectionTimeMsFirstGroup.TabIndex = 2;
-            this.txtProjectionTimeMsFirstGroup.Text = "15000";
+            this.txtProjectionTimeMsFirstGroup.Text = "0";
             this.txtProjectionTimeMsFirstGroup.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.txtProjectionTimeMsFirstGroup.TextChanged += new System.EventHandler(this.txtProjectionTimeMsFirstGroup_TextChanged);
             // 
@@ -249,7 +249,7 @@
             this.txtProjectionTimeMsSecondGroup.Name = "txtProjectionTimeMsSecondGroup";
             this.txtProjectionTimeMsSecondGroup.Size = new System.Drawing.Size(48, 20);
             this.txtProjectionTimeMsSecondGroup.TabIndex = 4;
-            this.txtProjectionTimeMsSecondGroup.Text = "3000";
+            this.txtProjectionTimeMsSecondGroup.Text = "0";
             this.txtProjectionTimeMsSecondGroup.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.txtProjectionTimeMsSecondGroup.TextChanged += new System.EventHandler(this.txtProjectionTimeMsSecondGroup_TextChanged);
             // 
@@ -277,7 +277,7 @@
             this.txtFirstGroupCount.Name = "txtFirstGroupCount";
             this.txtFirstGroupCount.Size = new System.Drawing.Size(33, 20);
             this.txtFirstGroupCount.TabIndex = 3;
-            this.txtFirstGroupCount.Text = "3";
+            this.txtFirstGroupCount.Text = "0";
             this.txtFirstGroupCount.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.txtFirstGroupCount.TextChanged += new System.EventHandler(this.txtFirstGroupCount_TextChanged);
             // 
@@ -305,7 +305,7 @@
             this.txtSecondGroupCount.Name = "txtSecondGroupCount";
             this.txtSecondGroupCount.Size = new System.Drawing.Size(33, 20);
             this.txtSecondGroupCount.TabIndex = 5;
-            this.txtSecondGroupCount.Text = "5";
+            this.txtSecondGroupCount.Text = "0";
             this.txtSecondGroupCount.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.txtSecondGroupCount.TextChanged += new System.EventHandler(this.txtSecondGroupCount_TextChanged);
             // 

@@ -40,6 +40,11 @@ namespace Controller
             this.beamerForm.SetBounds(bounds.X, bounds.Y, bounds.Width, bounds.Height);
             this.beamerForm.Show();
             this.machineConfig = new MachineConfig();
+            this.txtProjectionTimeMs.Text = this.projectionTimeMs.ToString();
+            this.txtProjectionTimeMsFirstGroup.Text = this.projectionTimeMsFirstGroup.ToString();
+            this.txtProjectionTimeMsSecondGroup.Text = this.projectionTimeMsSecondGroup.ToString();
+            this.txtFirstGroupCount.Text = this.projectionTimeMsFirstGroupCount.ToString();
+            this.txtSecondGroupCount.Text = this.projectionTimeMsSecondGroupCount.ToString();
         }
 
         private static Screen GetBeamerScreen()
@@ -153,11 +158,11 @@ namespace Controller
         }
 
 
-        private int projectionTimeMs = 1000;
+        private int projectionTimeMs = 2400;
         private void txtProjectionTimeMs_TextChanged(object sender, EventArgs e)
         {
             var oldValue = txtProjectionTimeMs.Text;
-            this.projectionTimeMs = ValidateTextInputIsNumberAndReturnValue(txtProjectionTimeMs, 1000);
+            this.projectionTimeMs = ValidateTextInputIsNumberAndReturnValue(txtProjectionTimeMs, 2400);
             if (this.processor != null) {
                 if (!this.processor.SetProjectionTime(projectionTimeMs)) {
                     this.projectionTimeMs = int.Parse(oldValue);
@@ -481,9 +486,9 @@ namespace Controller
                 this.printerInterface.InitializePrintHeightUm = this.machineConfig.InitializePositionFromTopSensorMu;
                 this.printerInterface.ResinPump = true;
                 await Task.Run(new Action(this.printerInterface.InitializePrinter));
-                this.StatusMessage("Allow resin pump to run a bit longer to fill reservoir. (5 seconds)");
+                this.StatusMessage("Allow resin pump to run a bit longer to fill reservoir. (" + this.machineConfig.PumpTimeAfterInitializeSeconds + " seconds)");
                 await Task.Run(() => {
-                    Thread.Sleep(5000);
+                    Thread.Sleep(this.machineConfig.PumpTimeAfterInitializeSeconds * 1000);
                     this.printerInterface.ResinPump = false;
                 });
                 this.btnInitialize.Enabled = true;

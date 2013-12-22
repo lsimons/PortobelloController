@@ -23,11 +23,12 @@ namespace Controller
 
         private void MachineConfig_Load(object sender, EventArgs e)
         {
-            this.txtDipHeightUM.Text = DipDepthMu.ToString();
-            this.txtInitializeHeightUM.Text = InitializePositionFromTopSensorMu.ToString();
+            this.txtDipHeightUM.Text = this.DipDepthMu.ToString();
+            this.txtInitializeHeightUM.Text = this.InitializePositionFromTopSensorMu.ToString();
             if (this.cbLayerThickness.Items.Contains(this.LayerHeightMu.ToString())) {
                 this.cbLayerThickness.SelectedItem = this.LayerHeightMu.ToString();
             }
+            this.txtResinPumpAfterInitializeSeconds.Text = this.PumpTimeAfterInitializeSeconds.ToString();
         }
 
         public int DipDepthMu
@@ -81,6 +82,23 @@ namespace Controller
             }
         }
 
+        public int PumpTimeAfterInitializeSeconds
+        {
+            get
+            {
+                var pumpTimeAfterInitializeSeconds = baseRegKey.GetValue("PumpTimeAfterInitializeSeconds");
+                if (pumpTimeAfterInitializeSeconds == null) {
+                    baseRegKey.SetValue("PumpTimeAfterInitializeSeconds", 10, RegistryValueKind.DWord);
+                    pumpTimeAfterInitializeSeconds = 10;
+                }
+                return (int)pumpTimeAfterInitializeSeconds;
+            }
+            set
+            {
+                baseRegKey.SetValue("PumpTimeAfterInitializeSeconds", value, RegistryValueKind.DWord);
+            }
+        }
+
         private void btnOK_Click(object sender, EventArgs e)
         {
             this.DialogResult = DialogResult.OK;
@@ -93,6 +111,10 @@ namespace Controller
                 this.InitializePositionFromTopSensorMu = initializeHeight;
             }
             this.LayerHeightMu = int.Parse(this.cbLayerThickness.SelectedItem as string);
+            int resinPumpDelay;
+            if (int.TryParse(this.txtResinPumpAfterInitializeSeconds.Text, out resinPumpDelay)) {
+                this.PumpTimeAfterInitializeSeconds = resinPumpDelay;
+            }
         }
 
         private void btnCancel_Click(object sender, EventArgs e)
