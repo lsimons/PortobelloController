@@ -46,6 +46,7 @@ namespace Controller
             try {
                 this.labjackBoard = new U3(LJUD.CONNECTION.USB, "0", true);
                 this.Connected = true;
+                this.Reset();
                 return true;
             } catch (LabJackUDException err) {
                 message = err.LJUDError.ToString() + ": " + err.Message;
