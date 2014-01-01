@@ -97,12 +97,12 @@
             // 
             // cbLayerThickness
             // 
-            this.cbLayerThickness.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbLayerThickness.FormattingEnabled = true;
             this.cbLayerThickness.Items.AddRange(new object[] {
-            "31",
-            "62",
-            "88"});
+            "30",
+            "60",
+            "88",
+            "100"});
             this.cbLayerThickness.Location = new System.Drawing.Point(194, 64);
             this.cbLayerThickness.Name = "cbLayerThickness";
             this.cbLayerThickness.Size = new System.Drawing.Size(174, 21);

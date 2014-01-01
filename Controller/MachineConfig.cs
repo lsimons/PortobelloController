@@ -18,16 +18,14 @@ namespace Controller
         public MachineConfig()
         {
             InitializeComponent();
-            baseRegKey = Registry.CurrentUser.CreateSubKey("PortobelloController");
+            baseRegKey = Registry.CurrentUser.CreateSubKey("Software").CreateSubKey("Orchis Print Solutions").CreateSubKey("Portobello Controller");
         }
 
         private void MachineConfig_Load(object sender, EventArgs e)
         {
             this.txtDipHeightUM.Text = this.DipDepthMu.ToString();
             this.txtInitializeHeightUM.Text = this.InitializePositionFromTopSensorMu.ToString();
-            if (this.cbLayerThickness.Items.Contains(this.LayerHeightMu.ToString())) {
-                this.cbLayerThickness.SelectedItem = this.LayerHeightMu.ToString();
-            }
+            this.cbLayerThickness.SelectedItem = this.LayerHeightMu.ToString();
             this.txtResinPumpAfterInitializeSeconds.Text = this.PumpTimeAfterInitializeSeconds.ToString();
         }
 
@@ -54,8 +52,8 @@ namespace Controller
             {
                 var layerHeight = baseRegKey.GetValue("LayerHeightMu");
                 if (layerHeight == null) {
-                    baseRegKey.SetValue("LayerHeightMu", 62, RegistryValueKind.DWord);
-                    layerHeight = 62;
+                    baseRegKey.SetValue("LayerHeightMu", 60, RegistryValueKind.DWord);
+                    layerHeight = 60;
                 }
                 return (int)layerHeight;
             }
@@ -110,7 +108,9 @@ namespace Controller
             if (int.TryParse(this.txtInitializeHeightUM.Text, out initializeHeight)) {
                 this.InitializePositionFromTopSensorMu = initializeHeight;
             }
-            this.LayerHeightMu = int.Parse(this.cbLayerThickness.SelectedItem as string);
+            if (!string.IsNullOrWhiteSpace(this.cbLayerThickness.Text)) {
+                this.LayerHeightMu = int.Parse(this.cbLayerThickness.Text);
+            }
             int resinPumpDelay;
             if (int.TryParse(this.txtResinPumpAfterInitializeSeconds.Text, out resinPumpDelay)) {
                 this.PumpTimeAfterInitializeSeconds = resinPumpDelay;

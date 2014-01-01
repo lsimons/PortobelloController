@@ -1,6 +1,7 @@
 ﻿using LabJack.LabJackUD;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -222,7 +223,7 @@ namespace Controller
                         LJUD.eGet(this.labjackBoard.ljhandle, LJUD.IO.GET_COUNTER, 1, ref counterVal, 0);
                     } while ((UInt32)counterVal < pulseCount && DateTime.UtcNow < expectedEndTime);
                 } catch (LabJackUDException err) {
-                    Console.WriteLine(err.ToString());
+                    Trace.TraceError("Error while moving lift." + Environment.NewLine + err.ToString());
                 }
             }
         }

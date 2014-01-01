@@ -1,0 +1,43 @@
+<?xml version='1.0' encoding='windows-1252'?>
+<Wix xmlns='http://schemas.microsoft.com/wix/2006/wi'
+     xmlns:bal="http://schemas.microsoft.com/wix/BalExtension"
+     xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
+  <Bundle Version="1.4.0" UpgradeCode="4ea47091-084c-4b77-be29-113ee737d102" IconSourceFile="favicon.ico"
+          Manufacturer="Orchis Print Solutions" Name="Orchis Portobello Controller" HelpUrl="http://www.orchis-print.nl">
+    <util:FileSearch
+        Id='SearchForMSChart'
+        Variable="LJUD"
+        Result="exists"
+        Path="[ProgramFilesFolder]LabJack\Drivers\LabJack.LJM.dll"
+       />
+    
+    <BootstrapperApplicationRef Id="WixStandardBootstrapperApplication.RtfLicense">
+      <bal:WixStandardBootstrapperApplication
+          LicenseFile="InstallationFiles\AdditionalFiles\LICENSE.rtf"
+          LogoFile="InstallationFiles\AdditionalFiles\logo_klein.png"
+          ShowVersion="yes"
+      />
+    </BootstrapperApplicationRef>
+
+    <bal:Condition Message="You need administrator permission to install this software.">
+      <![CDATA[Privileged <> 0]]>
+    </bal:Condition>
+    
+    <Chain>
+      <ExePackage
+          SourceFile="InstallationFiles\U3_driver\LabJack-2013.12.19.exe"
+          InstallCondition="LJUD=0"
+          PerMachine="yes"
+      />
+      
+      <PackageGroupRef Id="NetFx45Web"/>
+
+      <MsiPackage
+        Id="Setup"
+        Compressed="yes"
+        SourceFile="PortobelloController.msi"
+        Vital="yes"
+      />
+    </Chain>
+  </Bundle>
+</Wix>

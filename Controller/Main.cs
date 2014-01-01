@@ -102,7 +102,9 @@ namespace Controller
                 var invoker = new StatusMessageInvoker(StatusMessage);
                 this.Invoke(invoker, message);
             } else {
-                this.txtStatus.AppendText(DateTime.Now.ToString("hh:mm:ss") + ": " + message + Environment.NewLine);
+                var formattedMessage = DateTime.Now.ToString("hh:mm:ss") + ": " + message + Environment.NewLine;
+                this.txtStatus.AppendText(formattedMessage);
+                Trace.Write(formattedMessage);
             }
         }
 
@@ -634,6 +636,26 @@ namespace Controller
             } else {
                 MessageBox.Show("Cannot store position, make sure printer is connected and position is not -1", "Warning, no changes made", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
+        }
+
+        private void newToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("Not implemented yet. Scheduled for next release.");
+        }
+
+        private void openToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("Not implemented yet. Scheduled for next release.");
+        }
+
+        private void saveToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("Not implemented yet. Scheduled for next release.");
+        }
+
+        private void saveAsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("Not implemented yet. Scheduled for next release.");
         }
     }
 }

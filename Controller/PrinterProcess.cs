@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -65,13 +66,7 @@ namespace Controller
                 this.printerInterface.TryConnect(out error)
             ) {
                 this.mainForm.StatusMessage("Printer connected");
-                try {
-                    new Thread(Run) { IsBackground = true }.Start();
-                } catch (Exception err) {
-                    this.mainForm.StatusMessage("Unknown error." + Environment.NewLine + err.ToString());
-                    this.running = false;
-                    this.mainForm.ProcessorDone();
-                }
+                new Thread(Run) { IsBackground = true }.Start();
             } else {
                 this.mainForm.StatusMessage("Failed to connect to server: " + error);
                 this.running = false;
@@ -82,8 +77,9 @@ namespace Controller
         private void Run()
         {
             try {
-                this.mainForm.StatusMessage("Loading images list " + this.slicePath);
                 LoadImages();
+                this.mainForm.StatusMessage(this.GetJobInfo());
+                this.mainForm.StatusMessage("Loading images list " + this.slicePath);
                 this.mainForm.SetTotalSlices(this.images.Count);
                 var bufferThread = new Thread(FillBufferThread);
                 bufferThread.IsBackground = true;
@@ -95,10 +91,27 @@ namespace Controller
                 this.running = false;
                 this.mainForm.ProcessorDone();
             } catch (Exception err) {
+                Trace.TraceError("Unknown error in print process." + Environment.NewLine + err.ToString());
                 this.mainForm.StatusMessage("Unknown error." + Environment.NewLine + err.ToString());
                 this.running = false;
                 this.mainForm.ProcessorDone();
             }
+        }
+
+        private string GetJobInfo()
+        {
+            var jobInfo = new StringBuilder();
+            jobInfo.Append(Environment.NewLine + " --- JOB INFORMATION ---" + Environment.NewLine);
+            jobInfo.Append("  Image folder:\t\t" + Path.GetFileName(this.slicePath) + Environment.NewLine);
+            if (this.images != null) {
+                jobInfo.Append("  Image count:\t\t" + this.images.Count.ToString() + Environment.NewLine);
+            }
+            jobInfo.Append("  Layer height:\t\t" + this.layerHeight.ToString() + Environment.NewLine);
+            jobInfo.Append("  Time (ms) 1st group:\t" + this.projectionTimeMsFirstGroup.ToString("00000") + "  for:  " + this.projectionTimeMsFirstGroupCount + " layers." + Environment.NewLine);
+            jobInfo.Append("  Time (ms) 2nd group:\t" + this.projectionTimeMsSecondGroup.ToString("00000") + "  for:  " + this.projectionTimeMsSecondGroupCount + " layers." + Environment.NewLine);
+            jobInfo.Append("  Time (ms) remaining layers:\t" + this.projectionTimeMs.ToString("00000") + Environment.NewLine);
+            jobInfo.Append(" -----------------------");
+            return jobInfo.ToString();
         }
 
         private void LoadImages()

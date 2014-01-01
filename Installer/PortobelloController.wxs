@@ -1,0 +1,97 @@
+<?xml version='1.0' encoding='windows-1252'?>
+<Wix xmlns='http://schemas.microsoft.com/wix/2006/wi'  xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
+  <Product Name='Portobello Controller' Id='9e22de00-c32d-4251-baff-7ebad743f947' UpgradeCode='cf750789-7d48-4075-be53-ffa04a179463'
+    Language='1033' Codepage='1252' Version='1.4.0' Manufacturer='Orchis Print Solutions'>
+
+    <Package Id='*' Keywords='Portobello Controller Installer' Description="Portobello Controller Installer"
+      Comments='Installatie van de Portobello printer software' Manufacturer='Orchis Print Solutions'
+      InstallerVersion='100' Languages='1033' Compressed='yes' SummaryCodepage='1252' InstallScope='perMachine' />
+
+    <Media Id='1' Cabinet='portobello.cab' EmbedCab='yes' />
+
+    <Directory Id='TARGETDIR' Name='SourceDir'>
+      <Directory Id='ProgramFilesFolder' Name='PFiles'>
+        <Directory Id='OrchisPrint' Name='Orchis Print Solutions'>
+          <Directory Id='INSTALLDIR' Name='Portobello Controller'>
+
+            <Component Id='MainExecutable' Guid='ed5e3001-78da-4317-8ddd-002f53f6acc0'>
+              <File Id='PortobelloControllerEXE' Name='PortobelloController.exe' DiskId='1' Source='InstallationFiles\Controller\PortobelloController.exe' KeyPath='yes'>
+                <Shortcut Id="startmenuPortobelloController" Directory="ProgramMenuDir" Name="Portobello Controller" WorkingDirectory='INSTALLDIR' Icon="PortobelloController.exe" IconIndex="0" Advertise="yes" />
+                <Shortcut Id="desktopPortobelloController" Directory="DesktopFolder" Name="Portobello Controller" WorkingDirectory='INSTALLDIR' Icon="PortobelloController.exe" IconIndex="0" Advertise="yes" />
+              </File>
+              <util:EventSource Log="Application" Name="PortobelloController"
+                EventMessageFile="[WindowsFolder]Microsoft.NET\Framework\v4.0.30319\EventLogMessages.dll"/>
+            </Component>
+
+            <Component Id='U3DriverInterface' Guid='ed5e3001-78da-4317-8ddd-002f53f6acc1'>
+              <File Id='U3DriverInterfaceDLL' Name='LJUDDotNet.dll' DiskId='1' Source='InstallationFiles\Controller\LJUDDotNet.dll' KeyPath='yes' />
+            </Component>
+
+            <Component Id='AppConfig' Guid='ed5e3001-78da-4317-8ddd-002f53f6acc2'>
+              <File Id='AppConfig' Name='PortobelloController.exe.config' DiskId='1' Source='InstallationFiles\Controller\PortobelloController.exe.config' KeyPath='yes' />
+            </Component>
+
+            <Component Id="RegistrySettings" Guid='ed5e3001-78da-4317-8ddd-002f53f6acc3'>
+              <RegistryKey Id='PortobelloSettings' Root='HKCU' Key='[Manufacturer]\PortobelloController' ForceCreateOnInstall='yes'>
+                <RegistryValue Type='string' Name='InstallDir' Value='[INSTALLDIR]'/>
+                <RegistryValue Type='integer' Name='DipHeightMu' Value='2400' />
+                <RegistryValue Type='integer' Name='InitializeHeightFromTopMu' Value='25000' />
+                <RegistryValue Type='integer' Name='LayerHeightMu' Value='60' />
+                <RegistryValue Type='integer' Name='PumpTimeAfterInitializeSeconds' Value='5' />
+              </RegistryKey>
+            </Component>
+            
+            <!--
+            <Component Id='Manual' Guid='ed5e3001-78da-4317-8ddd-002f53f6acc3'>
+              <File Id='Manual' Name='Manual.pdf' DiskId='1' Source='Manual.pdf' KeyPath='yes'>
+                <Shortcut Id="startmenuManual" Directory="ProgramMenuDir" Name="Instruction Manual" Advertise="yes" />
+              </File>
+            </Component>
+            -->
+
+          </Directory>
+        </Directory>
+      </Directory>
+
+      <Directory Id="ProgramMenuFolder" Name="Programs">
+        <Directory Id="ProgramMenuDir" Name="Orchis Print Solutions">
+          <Component Id="ProgramMenuDir" Guid="26851e70-c7ef-4779-9233-b3375b212c3e">
+            <RemoveFolder Id='ProgramMenuDir' On='uninstall' />
+            <RegistryValue Root='HKCU' Key='Software\[Manufacturer]\[ProductName]\ProgramFolder' Type='string' Value='' KeyPath='yes' />
+          </Component>
+        </Directory>
+      </Directory>
+
+      <Directory Id="DesktopFolder" Name="Desktop" />
+    </Directory>
+
+    <Feature Id='Complete' Title='Portobello Controller' Description='Portobello controller installation' Level='1'>
+      <ComponentRef Id='MainExecutable' />
+      <ComponentRef Id='U3DriverInterface' />
+      <ComponentRef Id='AppConfig' />
+      <ComponentRef Id='ProgramMenuDir' />
+      <ComponentRef Id='RegistrySettings' />
+    </Feature>
+
+    <Icon Id="PortobelloController.exe" SourceFile="InstallationFiles\Controller\PortobelloController.exe" />
+    <Property Id="ARPPRODUCTICON" Value="PortobelloController.exe" />
+
+    <Property Id="WIXUI_INSTALLDIR" Value="INSTALLDIR" />
+    <UIRef Id="WixUI_InstallDir" />
+    <UIRef Id="WixUI_ErrorProgressText" />
+
+    <WixVariable Id="WixUILicenseRtf" Value="InstallationFiles\AdditionalFiles\LICENSE.rtf" />
+    <WixVariable Id="WixUIBannerBmp" Value="InstallationFiles\AdditionalFiles\installer_other.bmp" />
+    <WixVariable Id="WixUIDialogBmp" Value="InstallationFiles\AdditionalFiles\installer_main.bmp" />
+
+    <Upgrade Id='cf750789-7d48-4075-be53-ffa04a179463'>
+      <UpgradeVersion OnlyDetect='no' Property='PREVIOUSFOUND'
+        Minimum='1.0.0' IncludeMinimum='yes'
+        Maximum='1.4.0' IncludeMaximum='no' />
+    </Upgrade>
+
+    <InstallExecuteSequence>
+      <RemoveExistingProducts Before="InstallInitialize" />
+    </InstallExecuteSequence>
+  </Product>
+</Wix>
