@@ -110,3 +110,4 @@ UpgradeLog*.XML
 # WiX toolset intermediate results
 *.wixobj
 *.wixpdb
+Installer/InstallationFiles/Controller/
