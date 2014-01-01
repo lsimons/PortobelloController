@@ -22,6 +22,8 @@
     <bal:Condition Message="You need administrator permission to install this software.">
       <![CDATA[Privileged <> 0]]>
     </bal:Condition>
+
+    <Variable Name="LaunchTarget" Value="[ProgramFilesFolder]\Orchis Print Solutions\Portobello Controller\PortobelloController.exe"/>
     
     <Chain>
       <ExePackage

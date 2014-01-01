@@ -64,9 +64,13 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="BuildMSI.bat" />
-    <None Include="PortobelloBundle.wxs" />
+    <None Include="PortobelloBundle.wxs">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="InstallationFiles\Controller\PortobelloController.exe.config" />
-    <None Include="PortobelloController.wxs" />
+    <None Include="PortobelloController.wxs">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
