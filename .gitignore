@@ -110,4 +110,6 @@ UpgradeLog*.XML
 # WiX toolset intermediate results
 *.wixobj
 *.wixpdb
+PortobelloController.msi
+PortobelloBundle.exe
 Installer/InstallationFiles/Controller/
