@@ -25,7 +25,7 @@ namespace Controller
         {
             this.txtDipHeightUM.Text = this.DipDepthMu.ToString();
             this.txtInitializeHeightUM.Text = this.InitializePositionFromTopSensorMu.ToString();
-            this.cbLayerThickness.SelectedItem = this.LayerHeightMu.ToString();
+            this.cbLayerThickness.Text = this.LayerHeightMu.ToString();
             this.txtResinPumpAfterInitializeSeconds.Text = this.PumpTimeAfterInitializeSeconds.ToString();
         }
 
