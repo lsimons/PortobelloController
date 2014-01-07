@@ -54,7 +54,6 @@
     <Content Include="InstallationFiles\Controller\LJUDDotNet.dll" />
     <Content Include="InstallationFiles\Controller\PortobelloController.exe" />
     <Content Include="InstallationFiles\Controller\PortobelloController.pdb" />
-    <Content Include="InstallationFiles\U3_driver\LabJack-2013.10.14.exe" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Controller\Controller.csproj">
@@ -71,6 +70,9 @@
     <None Include="PortobelloController.wxs">
       <SubType>Designer</SubType>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="InstallationFiles\U3_driver\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

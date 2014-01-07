@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='windows-1252'?>
 <Wix xmlns='http://schemas.microsoft.com/wix/2006/wi'  xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
   <Product Name='Portobello Controller' Id='9e22de00-c32d-4251-baff-7ebad743f947' UpgradeCode='cf750789-7d48-4075-be53-ffa04a179463'
-    Language='1033' Codepage='1252' Version='1.4.3' Manufacturer='Orchis Print Solutions'>
+    Language='1033' Codepage='1252' Version='1.4.4' Manufacturer='Orchis Print Solutions'>
 
     <Package Id='*' Keywords='Portobello Controller Installer' Description="Portobello Controller Installer"
       Comments='Installatie van de Portobello printer software' Manufacturer='Orchis Print Solutions'
@@ -17,7 +17,8 @@
             <Component Id='MainExecutable' Guid='ed5e3001-78da-4317-8ddd-002f53f6acc0'>
               <File Id='PortobelloControllerEXE' Name='PortobelloController.exe' DiskId='1' Source='InstallationFiles\Controller\PortobelloController.exe' KeyPath='yes'>
                 <Shortcut Id="startmenuPortobelloController" Directory="ProgramMenuDir" Name="Portobello Controller" WorkingDirectory='INSTALLDIR' Icon="PortobelloController.exe" IconIndex="0" Advertise="yes" />
-                <Shortcut Id="desktopPortobelloController" Directory="DesktopFolder" Name="Portobello Controller" WorkingDirectory='INSTALLDIR' Icon="PortobelloController.exe" IconIndex="0" Advertise="yes" />
+                <!-- http://stackoverflow.com/questions/4658220/create-shortcut-checkbox moet nog een keer zoals in de voorgaande link. -->
+                <!--<Shortcut Id="desktopPortobelloController" Directory="DesktopFolder" Name="Portobello Controller" WorkingDirectory='INSTALLDIR' Icon="PortobelloController.exe" IconIndex="0" Advertise="yes" /> -->
               </File>
               <util:EventSource Log="Application" Name="PortobelloController"
                 EventMessageFile="[WindowsFolder]Microsoft.NET\Framework\v4.0.30319\EventLogMessages.dll"/>
@@ -87,7 +88,7 @@
     <Upgrade Id='cf750789-7d48-4075-be53-ffa04a179463'>
       <UpgradeVersion OnlyDetect='no' Property='PREVIOUSFOUND'
         Minimum='1.0.0' IncludeMinimum='yes'
-        Maximum='1.4.3' IncludeMaximum='no' />
+        Maximum='1.4.4' IncludeMaximum='no' />
     </Upgrade>
 
     <InstallExecuteSequence>
