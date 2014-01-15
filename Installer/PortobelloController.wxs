@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='windows-1252'?>
 <Wix xmlns='http://schemas.microsoft.com/wix/2006/wi'  xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
   <Product Name='Portobello Controller' Id='9e22de00-c32d-4251-baff-7ebad743f947' UpgradeCode='cf750789-7d48-4075-be53-ffa04a179463'
-    Language='1033' Codepage='1252' Version='1.4.4' Manufacturer='Orchis Print Solutions'>
+    Language='1033' Codepage='1252' Version='1.4.5' Manufacturer='Orchis Print Solutions'>
 
     <Package Id='*' Keywords='Portobello Controller Installer' Description="Portobello Controller Installer"
       Comments='Installatie van de Portobello printer software' Manufacturer='Orchis Print Solutions'
@@ -88,7 +88,7 @@
     <Upgrade Id='cf750789-7d48-4075-be53-ffa04a179463'>
       <UpgradeVersion OnlyDetect='no' Property='PREVIOUSFOUND'
         Minimum='1.0.0' IncludeMinimum='yes'
-        Maximum='1.4.4' IncludeMaximum='no' />
+        Maximum='1.4.5' IncludeMaximum='no' />
     </Upgrade>
 
     <InstallExecuteSequence>

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -26,6 +27,24 @@ namespace Controller
         {
             InitializeComponent();
             this.beamerForm = new BeamerOutput();
+            SetBeamerBoundsAndPosition();
+            this.beamerForm.Show();
+            SystemEvents.DisplaySettingsChanged += SystemEvents_DisplaySettingsChanged;
+            this.machineConfig = new MachineConfig();
+            this.txtProjectionTimeMs.Text = this.projectionTimeMs.ToString();
+            this.txtProjectionTimeMsFirstGroup.Text = this.projectionTimeMsFirstGroup.ToString();
+            this.txtProjectionTimeMsSecondGroup.Text = this.projectionTimeMsSecondGroup.ToString();
+            this.txtFirstGroupCount.Text = this.projectionTimeMsFirstGroupCount.ToString();
+            this.txtSecondGroupCount.Text = this.projectionTimeMsSecondGroupCount.ToString();
+        }
+
+        void SystemEvents_DisplaySettingsChanged(object sender, EventArgs e)
+        {
+            SetBeamerBoundsAndPosition();
+        }
+
+        private void SetBeamerBoundsAndPosition()
+        {
             this.beamerForm.StartPosition = FormStartPosition.Manual;
             var beamerScreen = GetBeamerScreen();
             Rectangle bounds;
@@ -38,13 +57,6 @@ namespace Controller
                 bounds = new Rectangle(500, 10, 400, 400);
             }
             this.beamerForm.SetBounds(bounds.X, bounds.Y, bounds.Width, bounds.Height);
-            this.beamerForm.Show();
-            this.machineConfig = new MachineConfig();
-            this.txtProjectionTimeMs.Text = this.projectionTimeMs.ToString();
-            this.txtProjectionTimeMsFirstGroup.Text = this.projectionTimeMsFirstGroup.ToString();
-            this.txtProjectionTimeMsSecondGroup.Text = this.projectionTimeMsSecondGroup.ToString();
-            this.txtFirstGroupCount.Text = this.projectionTimeMsFirstGroupCount.ToString();
-            this.txtSecondGroupCount.Text = this.projectionTimeMsSecondGroupCount.ToString();
         }
 
         private static Screen GetBeamerScreen()
@@ -264,6 +276,8 @@ namespace Controller
             } else if (this.processor != null) {
                 this.processor.Stop();
                 e.Cancel = true;
+            } else {
+                SystemEvents.DisplaySettingsChanged -= SystemEvents_DisplaySettingsChanged;
             }
         }
 
@@ -352,6 +366,11 @@ namespace Controller
                 if (this.printerInterface != null) {
                     this.printerInterface.LiftEnabled = false;
                 }
+                if (this.processor != null) {
+                    if (!this.processor.Pause) {
+                        this.btnPause_Click(this, null);
+                    }
+                }
             } else {
                 this.btnEmergencyStop.Image = Properties.Resources.emergency_stop;
                 this.btnEmergencyStop.Text = "EMERGENCY\nSTOP";
@@ -412,7 +431,7 @@ namespace Controller
                 this.Invoke(handle, state);
             } else {
                 if (state) {
-                    this.ledBottomSensor.BackgroundImage = Properties.Resources.led_blue;
+                    this.ledBottomSensor.BackgroundImage = Properties.Resources.led_red;
                 } else {
                     this.ledBottomSensor.BackgroundImage = Properties.Resources.led_off;
                 }
@@ -426,7 +445,7 @@ namespace Controller
                 this.Invoke(handle, state);
             } else {
                 if (state) {
-                    this.ledTopSensor.BackgroundImage = Properties.Resources.led_blue;
+                    this.ledTopSensor.BackgroundImage = Properties.Resources.led_red;
                 } else {
                     this.ledTopSensor.BackgroundImage = Properties.Resources.led_off;
                 }
@@ -440,7 +459,7 @@ namespace Controller
                 this.Invoke(handle, state);
             } else {
                 if (state) {
-                    this.ledInkPump.BackgroundImage = Properties.Resources.led_blue;
+                    this.ledInkPump.BackgroundImage = Properties.Resources.led_red;
                 } else {
                     this.ledInkPump.BackgroundImage = Properties.Resources.led_off;
                 }
@@ -454,21 +473,21 @@ namespace Controller
                 this.Invoke(handle, state);
             } else {
                 if (state) {
-                    this.ledEmptyVat.BackgroundImage = Properties.Resources.led_blue;
+                    this.ledEmptyVat.BackgroundImage = Properties.Resources.led_red;
                 } else {
                     this.ledEmptyVat.BackgroundImage = Properties.Resources.led_off;
                 }
             }
         }
 
-        private delegate void SetLiftPositionInvoker(int position);
-        internal void SetLiftPosition(int position)
+        private delegate void SetLiftPositionInvoker(decimal position);
+        internal void SetLiftPosition(decimal position)
         {
             if (this.InvokeRequired) {
                 var invoker = new SetLiftPositionInvoker(SetLiftPosition);
                 this.Invoke(invoker, position);
             } else {
-                this.lblPositionFromTopMm.Text = position.ToString();
+                this.lblPositionFromTopMm.Text = position.ToString("####0.0");
             }
         }
 
@@ -500,7 +519,7 @@ namespace Controller
         private bool resinPump = false;
         private void btnInkPump_Click(object sender, EventArgs e)
         {
-            if (this.printerInterface != null && this.processor == null) {
+            if (this.printerInterface != null) {
                 this.resinPump = !this.resinPump;
                 if (this.resinPump) {
                     this.printerInterface.ResinPump = true;
@@ -509,11 +528,6 @@ namespace Controller
                     this.printerInterface.ResinPump = false;
                     this.btnInkPump.Image = Properties.Resources.fill;
                 }
-            } else {
-                if (this.printerInterface != null) {
-                    this.printerInterface.ResinPump = false;
-                }
-                this.btnInkPump.Image = Properties.Resources.fill;
             }
         }
 

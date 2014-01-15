@@ -265,10 +265,10 @@ namespace Controller
         public void MoveLiftToTop()
         {
             while (!TopSensor) {
-                MovePulses(1000, true);
+                MovePulses(2000, true);
             }
             while (TopSensor) {
-                MovePulses(200, false);
+                MovePulses(300, false);
             }
             while (!TopSensor) {
                 MovePulses(30, true);

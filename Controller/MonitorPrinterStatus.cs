@@ -16,7 +16,7 @@ namespace Controller
         private bool topSensor;
         private bool resinPump;
         private bool reservoirValve;
-        private int lastPosition;
+        private decimal lastPosition;
         private bool running = false;
 
         public MonitorPrinterStatus(IPrinterInterface printerInterface, Main mainForm)
@@ -55,7 +55,7 @@ namespace Controller
                     this.mainForm.SetReservoirValve(this.reservoirValve);
                 }
                 if (this.printerInterface.LiftPositionInUMFromTopSensor != -1) {
-                    var curPos = this.printerInterface.LiftPositionInUMFromTopSensor / 1000;
+                    var curPos = Math.Round(this.printerInterface.LiftPositionInUMFromTopSensor / 1000m, 1);
                     if (this.lastPosition != curPos) {
                         this.lastPosition = curPos;
                         this.mainForm.SetLiftPosition(this.lastPosition);
