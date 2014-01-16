@@ -26,9 +26,7 @@ namespace Controller
         public Main()
         {
             InitializeComponent();
-            this.beamerForm = new BeamerOutput();
             SetBeamerBoundsAndPosition();
-            this.beamerForm.Show();
             SystemEvents.DisplaySettingsChanged += SystemEvents_DisplaySettingsChanged;
             this.machineConfig = new MachineConfig();
             this.txtProjectionTimeMs.Text = this.projectionTimeMs.ToString();
@@ -45,6 +43,11 @@ namespace Controller
 
         private void SetBeamerBoundsAndPosition()
         {
+            if (this.beamerForm != null) {
+                this.beamerForm.ForceClose();
+                this.beamerForm = null;
+            }
+            this.beamerForm = new BeamerOutput();
             this.beamerForm.StartPosition = FormStartPosition.Manual;
             var beamerScreen = GetBeamerScreen();
             Rectangle bounds;
@@ -57,6 +60,7 @@ namespace Controller
                 bounds = new Rectangle(500, 10, 400, 400);
             }
             this.beamerForm.SetBounds(bounds.X, bounds.Y, bounds.Width, bounds.Height);
+            this.beamerForm.Show();
         }
 
         private static Screen GetBeamerScreen()

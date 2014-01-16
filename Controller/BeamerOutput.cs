@@ -29,9 +29,18 @@ namespace Controller
             }
         }
 
+        private bool closeFormEnabled = false;
+        public void ForceClose()
+        {
+            this.closeFormEnabled = true;
+            this.Close();
+        }
+
         private void BeamerOutput_FormClosing(object sender, FormClosingEventArgs e)
         {
-            e.Cancel = true;
+            if (!closeFormEnabled) {
+                e.Cancel = true;
+            }
         }
     }
 }
