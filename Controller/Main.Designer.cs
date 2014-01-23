@@ -96,6 +96,7 @@
             this.ToolTipHelp = new System.Windows.Forms.ToolTip(this.components);
             this.timerButtonLiftUp = new System.Windows.Forms.Timer(this.components);
             this.timerButtonLiftDown = new System.Windows.Forms.Timer(this.components);
+            this.cbDipForSecondLayer = new System.Windows.Forms.CheckBox();
             this.menuStrip1.SuspendLayout();
             this.pnlMain.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pbLayerThumbnail)).BeginInit();
@@ -349,32 +350,33 @@
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             this.fileToolStripMenuItem.Text = "File";
+            this.fileToolStripMenuItem.Visible = false;
             // 
             // newToolStripMenuItem
             // 
             this.newToolStripMenuItem.Name = "newToolStripMenuItem";
-            this.newToolStripMenuItem.Size = new System.Drawing.Size(123, 22);
+            this.newToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.newToolStripMenuItem.Text = "New";
             this.newToolStripMenuItem.Click += new System.EventHandler(this.newToolStripMenuItem_Click);
             // 
             // openToolStripMenuItem
             // 
             this.openToolStripMenuItem.Name = "openToolStripMenuItem";
-            this.openToolStripMenuItem.Size = new System.Drawing.Size(123, 22);
+            this.openToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.openToolStripMenuItem.Text = "Open";
             this.openToolStripMenuItem.Click += new System.EventHandler(this.openToolStripMenuItem_Click);
             // 
             // saveToolStripMenuItem
             // 
             this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
-            this.saveToolStripMenuItem.Size = new System.Drawing.Size(123, 22);
+            this.saveToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.saveToolStripMenuItem.Text = "Save";
             this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
             // 
             // saveAsToolStripMenuItem
             // 
             this.saveAsToolStripMenuItem.Name = "saveAsToolStripMenuItem";
-            this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(123, 22);
+            this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.saveAsToolStripMenuItem.Text = "Save As...";
             this.saveAsToolStripMenuItem.Click += new System.EventHandler(this.saveAsToolStripMenuItem_Click);
             // 
@@ -461,6 +463,7 @@
             this.pnlMain.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.pnlMain.Controls.Add(this.cbDipForSecondLayer);
             this.pnlMain.Controls.Add(this.btnConnect);
             this.pnlMain.Controls.Add(this.txtSecondGroupCount);
             this.pnlMain.Controls.Add(this.txtTimeRemaining);
@@ -818,6 +821,21 @@
             this.ledTopSensor.TabIndex = 5;
             this.ledTopSensor.TabStop = false;
             // 
+            // cbDipForSecondLayer
+            // 
+            this.cbDipForSecondLayer.AutoCheck = false;
+            this.cbDipForSecondLayer.AutoSize = true;
+            this.cbDipForSecondLayer.Location = new System.Drawing.Point(281, 59);
+            this.cbDipForSecondLayer.Name = "cbDipForSecondLayer";
+            this.cbDipForSecondLayer.Size = new System.Drawing.Size(40, 17);
+            this.cbDipForSecondLayer.TabIndex = 30;
+            this.cbDipForSecondLayer.Text = "dip";
+            this.ToolTipHelp.SetToolTip(this.cbDipForSecondLayer, "If this box is checked, the printer wil use dipping during this phase.\r\nIf not ch" +
+        "ecked, the printer will move a layer without dipping, which is useful for creati" +
+        "ng supports.");
+            this.cbDipForSecondLayer.UseVisualStyleBackColor = true;
+            this.cbDipForSecondLayer.Click += new System.EventHandler(this.cbDipForSecondLayer_Click);
+            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -917,6 +935,7 @@
         private System.Windows.Forms.Timer timerButtonLiftUp;
         private System.Windows.Forms.Timer timerButtonLiftDown;
         private System.Windows.Forms.Button btnSaveAsInitialPos;
+        private System.Windows.Forms.CheckBox cbDipForSecondLayer;
 
     }
 }

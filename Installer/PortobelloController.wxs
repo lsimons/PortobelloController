@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='windows-1252'?>
 <Wix xmlns='http://schemas.microsoft.com/wix/2006/wi'  xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
-  <Product Name='Portobello Controller' Id='9e22de00-c32d-4251-baff-7ebad743f947' UpgradeCode='cf750789-7d48-4075-be53-ffa04a179463'
-    Language='1033' Codepage='1252' Version='1.4.5' Manufacturer='Orchis Print Solutions'>
+  <Product Name='Portobello Controller' Id='*' UpgradeCode='cf750789-7d48-4075-be53-ffa04a179463'
+    Language='1033' Codepage='1252' Version='1.4.6' Manufacturer='Orchis Print Solutions'>
 
     <Package Id='*' Keywords='Portobello Controller Installer' Description="Portobello Controller Installer"
       Comments='Installatie van de Portobello printer software' Manufacturer='Orchis Print Solutions'
@@ -42,13 +42,10 @@
               </RegistryKey>
             </Component>
             
-            <!--
-            <Component Id='Manual' Guid='ed5e3001-78da-4317-8ddd-002f53f6acc3'>
-              <File Id='Manual' Name='Manual.pdf' DiskId='1' Source='Manual.pdf' KeyPath='yes'>
-                <Shortcut Id="startmenuManual" Directory="ProgramMenuDir" Name="Instruction Manual" Advertise="yes" />
+            <Component Id='License' Guid='ed5e3001-78da-4317-8ddd-002f53f6acc4'>
+              <File Id='License' Name='License.txt' DiskId='1' Source='InstallationFiles\AdditionalFiles\LICENSE.txt' KeyPath='yes'>
               </File>
             </Component>
-            -->
 
           </Directory>
         </Directory>
@@ -72,6 +69,7 @@
       <ComponentRef Id='AppConfig' />
       <ComponentRef Id='ProgramMenuDir' />
       <ComponentRef Id='RegistrySettings' />
+      <ComponentRef Id='License' />
     </Feature>
 
     <Icon Id="PortobelloController.exe" SourceFile="InstallationFiles\Controller\PortobelloController.exe" />
@@ -85,10 +83,11 @@
     <WixVariable Id="WixUIBannerBmp" Value="InstallationFiles\AdditionalFiles\installer_other.bmp" />
     <WixVariable Id="WixUIDialogBmp" Value="InstallationFiles\AdditionalFiles\installer_main.bmp" />
 
+    <Property Id="PREVIOUSFOUND" Secure="yes" />
     <Upgrade Id='cf750789-7d48-4075-be53-ffa04a179463'>
       <UpgradeVersion OnlyDetect='no' Property='PREVIOUSFOUND'
         Minimum='1.0.0' IncludeMinimum='yes'
-        Maximum='1.4.5' IncludeMaximum='no' />
+        Maximum='1.4.6' IncludeMaximum='no' />
     </Upgrade>
 
     <InstallExecuteSequence>

@@ -95,7 +95,7 @@ namespace Controller
                         this.processor.SetProjectionTimeFirstGroup(this.projectionTimeMsFirstGroup, this.projectionTimeMsFirstGroupCount);
                     }
                     if (this.projectionTimeMsSecondGroup > 0) {
-                        this.processor.SetProjectionTimeSecondGroup(this.projectionTimeMsSecondGroup, this.projectionTimeMsSecondGroupCount);
+                        this.processor.SetProjectionTimeSecondGroup(this.projectionTimeMsSecondGroup, this.projectionTimeMsSecondGroupCount, this.cbDipForSecondLayer.Checked);
                     }
                     btnStart.Image = Properties.Resources.glyphicons_175_stop;
                     btnStart.Text = "Stop";
@@ -233,7 +233,7 @@ namespace Controller
             var oldValue = txtProjectionTimeMsSecondGroup.Text;
             this.projectionTimeMsSecondGroup = ValidateTextInputIsNumberAndReturnValue(txtProjectionTimeMsSecondGroup, 1000);
             if (this.processor != null && this.projectionTimeMsSecondGroupCount > 0) {
-                if (!this.processor.SetProjectionTimeSecondGroup(this.projectionTimeMsSecondGroup, this.projectionTimeMsSecondGroupCount)) {
+                if (!this.processor.SetProjectionTimeSecondGroup(this.projectionTimeMsSecondGroup, this.projectionTimeMsSecondGroupCount, this.cbDipForSecondLayer.Checked)) {
                     this.projectionTimeMsSecondGroup = int.Parse(oldValue);
                     this.txtProjectionTimeMsSecondGroup.Text = oldValue;
                 }
@@ -245,10 +245,21 @@ namespace Controller
             var oldValue = txtSecondGroupCount.Text;
             this.projectionTimeMsSecondGroupCount = ValidateTextInputIsNumberAndReturnValue(txtSecondGroupCount, 20);
             if (this.processor != null && this.projectionTimeMsSecondGroup > 0) {
-                if (!this.processor.SetProjectionTimeSecondGroup(this.projectionTimeMsSecondGroup, this.projectionTimeMsSecondGroupCount)) {
+                if (!this.processor.SetProjectionTimeSecondGroup(this.projectionTimeMsSecondGroup, this.projectionTimeMsSecondGroupCount, this.cbDipForSecondLayer.Checked)) {
                     this.projectionTimeMsSecondGroupCount = int.Parse(oldValue);
                     this.txtSecondGroupCount.Text = oldValue;
                 }
+            }
+        }
+
+        private void cbDipForSecondLayer_Click(object sender, EventArgs e)
+        {
+            if (this.processor != null && this.projectionTimeMsSecondGroupCount > 0) {
+                if (this.processor.SetProjectionTimeSecondGroup(this.projectionTimeMsSecondGroup, this.projectionTimeMsSecondGroupCount, this.cbDipForSecondLayer.Checked)) {
+                    this.cbDipForSecondLayer.Checked = !this.cbDipForSecondLayer.Checked;
+                }
+            } else {
+                this.cbDipForSecondLayer.Checked = !this.cbDipForSecondLayer.Checked;
             }
         }
 

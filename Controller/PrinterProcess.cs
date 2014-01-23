@@ -31,6 +31,7 @@ namespace Controller
         private int pumpDelayAfterInitialize;
 
         private object bufferLock = new object();
+        private bool projectionSecondGroupDip;
 
         public bool Pause { get; set; }
 
@@ -182,10 +183,15 @@ namespace Controller
                 throw new Exception("Maximum print size reached.");
             }
             if (this.projectionTimeMsFirstGroupCount > 0) {
+                this.printerInterface.MoveLiftDown(layerHeight);
                 Thread.Sleep(2500);
             } else if (this.projectionTimeMsSecondGroupCount > 0) {
-                this.printerInterface.MoveLiftDown(this.dipDownMu);
-                this.printerInterface.MoveLiftUp(this.dipUpMu);
+                if (this.projectionSecondGroupDip) {
+                    this.printerInterface.MoveLiftDown(this.dipDownMu);
+                    this.printerInterface.MoveLiftUp(this.dipUpMu);
+                } else {
+                    this.printerInterface.MoveLiftDown(this.layerHeight);
+                }
             } else {
                 this.printerInterface.MoveLiftDown(this.dipDownMu);
                 this.printerInterface.MoveLiftUp(this.dipUpMu);
@@ -277,11 +283,12 @@ namespace Controller
             }
         }
 
-        internal bool SetProjectionTimeSecondGroup(int projectionTimeMs, int layerCount)
+        internal bool SetProjectionTimeSecondGroup(int projectionTimeMs, int layerCount, bool dipForSecondLayer)
         {
             if (!this.running) {
                 this.projectionTimeMsSecondGroup = projectionTimeMs;
                 this.projectionTimeMsSecondGroupCount = layerCount;
+                this.projectionSecondGroupDip = dipForSecondLayer;
                 return true;
             } else {
                 return false;
